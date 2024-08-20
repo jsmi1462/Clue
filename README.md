@@ -1,2 +1,0 @@
-# battleship
-Colab Battleship game 
