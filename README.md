@@ -1,2 +1,2 @@
 # battleship
-Colab Battleship game 
+Collab Battleship game 
