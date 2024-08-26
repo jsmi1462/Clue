@@ -27,3 +27,6 @@ xxxxxxxxx xxxx xxxxxxxxx"""
 
 for i, row in enumerate(map.split("\n")):
     print(f'this.addrow("{row}", {i});')
+
+temp = "-" * 24
+print(temp)
