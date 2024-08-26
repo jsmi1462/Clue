@@ -1,28 +1,25 @@
 public class map {
-    public char[20][20] map;
+    public char[25][23] map;
 
 
     public map {
-       addwall(9, 0, 0);
-       addwall(4, 0, 10);
-       addwall(9, 0, 15);
-      
-       
+        this.addrow("xxxxxxx xxxxxxxx x");
+        this.addrow("");
        
     }
-    public static void addwall(int n, int row, int column, bool horizontal) {
-        if (horizontal == False)
-        for (int i = 0; i < n; i ++) {
-            map[row][column] = "x";
-            if (column < 19) {
-               column += 1;
-            }
-            else {
-               row += 1;
-               column = 0;
+    public void addrow(String row, int rowIndex) {
+        int counter = 0;
+        for (char c: row.toCharArray()) {
+            map[rowIndex][counter] = c;
+            counter++;
+        }
+        if (counter < 22) {
+            while (counter < 22) {
+                counter ++;
+                map[rowIndex][counter] = 'x';
             }
         }
-      return;
+        return;
     }
     public String toString() {
     }
