@@ -7,7 +7,7 @@ public class Room
         this.name = name;
     }
 
-    public void printRoomArt(String weaponName)
+    public void printWeaponArt(String weaponName)
     {
         switch(weaponName)
         {
