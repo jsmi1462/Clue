@@ -1,2 +1,1 @@
-# battleship
-Colab Battleship game 
+collab clue game
