@@ -7,7 +7,7 @@ public class map {
     public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     int nplay; // there has to be a better way this is stupid
 
-
+    
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
         //add map
         this.nplay = nplayers;
@@ -68,13 +68,16 @@ public class map {
              }
              System.out.println("Player " + i + " is " + playername + "!"); 
              Player temp = new Player(playername);
-             players.add(temp);
+             players.add(temp.clone());
             }
         for (int i = 0; i < 6 - nplayers; i ++) {
             Player temp = new NPC();
-            players.add(temp);
+            players.add(temp.clone());
         }
     }
+
+
+
     public void addrow(String row, int rowIndex) { // add rows to the map
         int counter = 0;
         for (char c: row.toCharArray()) {
@@ -89,6 +92,25 @@ public class map {
         }
         return;
     }
+
+    public void moveplayer(int player) {
+        Player play = players.get(player);
+        boolean valid = false;
+        while (valid == false) {
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        try {
+        String move = input.readLine();
+        } catch (IOException e) {
+        continue;
+        }
+        }
+        switch (move) {
+
+        }
+        player.xPos
+        player.yPos
+    } 
+
     public String playerstring() {
         String output = "Number of NPCs: " + (6 - nplay);
         output += "\n" + "Real Players:\n";
