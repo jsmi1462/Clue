@@ -11,13 +11,13 @@ public class Player {
     public String namesGuessed;
     public String weaponsGuessed;
     public String roomsGuessed;
-    public String hand;
+    public ArrayList<String> hand;
 
     public Player(int xP, int yP, String n) {
         currentRoom = null;
         name = n;
         roll();
-        do {
+/*      do {
             System.out.print("Choose your character: + \r\n"
                 + "Colonel Mustard + \r\n"
                 + "Mr. Green + \r\n"
@@ -34,7 +34,7 @@ public class Player {
                 continue;
             }
         } while (true);
-
+*/
     }
 
     public void roll() {
