@@ -5,7 +5,7 @@ public class map {
     public char[][] map = new char[25][24]; // hardcoded map
     public ArrayList<Player> players = new ArrayList<Player>(); // list of players, will need to add some sort of method in map that implements the cll............
     public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
-    int nplay; // there has to be a better way this is stupid
+    public int nplay; // there has to be a better way this is stupid
 
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
@@ -96,21 +96,50 @@ public class map {
     public void moveplayer(int player) {
         Player play = players.get(player);
         boolean valid = false;
+        String move = new String();
         while (valid == false) {
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-        try {
-        String move = input.readLine();
-        } catch (IOException e) {
-        continue;
-        }
-        }
+            System.out.println("Enter move: w for up, a for left, d for right, s for down:");
+            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+            try {
+            
+            move = input.readLine();
+            } catch (IOException e) {
+            continue;
+            }
+            String[] validmoves = new String[]{"w", "a", "s", "d"};
+            for (String validmove: validmoves) {
+                if (move == validmove) valid = true;
+            }
         switch (move) {
+            case ("w"):
+                if (player.xPos > 0) {
+                    if (checkCollision(player.xPos - 1, player.yPos)) {
+                        player.xPos--;
+                        valid = true;
+                    }
+                    else System.out.println();
+                }
+                else System.out.println("Move invalid. You are already at the top of the board.");
+            case ("a"):
+                if (player.ypox > 0) {
+                    player.yPos--;
+                    valid = true;
+                }
+                else System.out.println("Move invalid. You are already at the top of the board.");
+            case ("s"):
+            case ("d"):
 
+
+        }
         }
         player.xPos
         player.yPos
     } 
 
+    public boolean checkCollision(int x, int y) {
+        if (map[x][y])
+        return true; // placeholder
+    }
     public String playerstring() {
         String output = "Number of NPCs: " + (6 - nplay);
         output += "\n" + "Real Players:\n";
