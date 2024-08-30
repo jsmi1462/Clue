@@ -12,8 +12,9 @@ public class Player {
     public String weaponsGuessed;
     public String roomsGuessed;
     public ArrayList<String> hand;
+    public Player nextplayer;
 
-    public Player(int xP, int yP, String n) {
+    public Player(String n) {
         currentRoom = null;
         name = n;
         roll();
@@ -59,6 +60,12 @@ public class Player {
         System.out.println("    Room: " + currentRoom.name);
         guesses.add(currentRoom.name);
         System.out.println(guesses.get(0) + ", " + guesses.get(1) + ", " + guesses.get(2));
+    }
+    
+    public Player clone() {
+        Player p = new Player(name);
+        return p;
+
     }
 
     private class Scorecard {
