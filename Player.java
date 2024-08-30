@@ -1,5 +1,5 @@
-import System.util.Scanner;
-import System.util.*;
+import java.util.Scanner;
+import java.util.*;
 
 public class Player {
     public Scanner input = new Scanner(System.in);
@@ -7,14 +7,15 @@ public class Player {
     public int xPos;
     public int yPos;
     public Room currentRoom;
-    public String character;
+    public String name;
     public String namesGuessed;
     public String weaponsGuessed;
     public String roomsGuessed;
     public String hand;
 
-    public Player(int xP, int yP, Player nextP) {
+    public Player(int xP, int yP, String n) {
         currentRoom = null;
+        name = n;
         roll();
         do {
             System.out.print("Choose your character: + \r\n"
@@ -60,5 +61,20 @@ public class Player {
         System.out.println(guesses.get(0) + ", " + guesses.get(1) + ", " + guesses.get(2));
     }
 
+    private class Scorecard {
+        private HashMap<String, String> people;
+        private HashMap<String, String> weapons;
+        private HashMap<String, String> rooms;
+
+
+        private Scorecard() {
+
+        }
+
+        public String toString() {
+            System.out.println("_________________________");
+            System.out.print("|     ");
+        }
+    }
 
 }
