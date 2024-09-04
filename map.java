@@ -4,7 +4,44 @@ import java.io.*;
 public class map {
     public char[][] map = new char[25][24]; // hardcoded map
     public ArrayList<Player> players = new ArrayList<Player>(); // list of players, will need to add some sort of method in map that implements the cll............
-    public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
+    public HashMap<int[], Room> doors = new HashMap<int[], Room>();
+
+    public void assignDoorCoors()
+    {
+        HashMap<String, Room> rooms = new HashMap<String, Room>();
+        String[] uniqueRoomNames = {"study", "hall", "lounge", "library", "dining room", "billard room",
+        "ball room", "kitchen", "conservatory"};
+        String[] roomNames = {"study", "hall", "lounge", "hall", "hall", "library", "dining room", "library", "billard room", "billard room",
+            "ball room", "ball room", "kitchen", "ball room", "ball room"};
+        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,8},{19,15}};
+        for (int i = 0; i < uniqueRoomNames.length; i++)
+        {
+        rooms.put(uniqueRoomNames[i],new Room(uniqueRoomNames[i])); //names and rooms
+        }
+        for (int i = 0; i <doorCoors.length; i++)
+        {
+        doors.put(doorCoors[i], rooms.get(roomNames[i])); //coordinates and rooms
+        }
+    }
+    
+    // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
+    
+    
+    
+    //doors.put([3,6], study);
+    //doors.put([4,9], hall);
+    //doors.put([5,17], lounge);
+    //doors.put([6,10], hall);
+    //doors.put([6,11], hall);
+    //doors.put([8,11], study);
+    //doors.put([3,6], study);
+    //doors.put([3,6], study);
+    //doors.put([3,6], study);
+
+    
+    
+    
+    
     int nplay; // there has to be a better way this is stupid
 
     
