@@ -7,9 +7,12 @@ public class map {
     public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
     public boolean gameover;
+    public ArrayList<String> answer;
+    
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
         //add map
+        createRooms();
         gameover = false;
         this.nplay = nplayers;
         this.addrow("xxxxxxx xxxxxxxx xxxxxxx", 0);
@@ -41,19 +44,20 @@ public class map {
         this.addplayers(nplayers);
         System.out.println(this.playerstring());
         ArrayList<int[]> StartingPos = new ArrayList<int[]>();
-        int[] coords = new int[]{1, 1}; // example coordinates
-        StartingPos.add(coords); // Jack - get starting position coordinates
+        StartingPos.add(new int[]{1, 1}); // Jack - get starting position coordinates
         for (int i = 0; i < StartingPos.size(); i ++) { // NOT WORKING UGH put in order on starting coordinates
             int[] pos = StartingPos.get(i);
             map[pos[0]][pos[1]] = (char) i;
-
         }
         System.out.println(this); // Jack - map string is wrong 
 
         
     }
     
-    public void addplayers(int nplayers) {
+    public void createRooms () {
+
+    }
+    public void addplayers (int nplayers) {
         //add NPC players
         
         
@@ -102,8 +106,33 @@ public class map {
         return;
     }
 
+    public boolean movenpc (int player) {
+        NPC npc = (NPC) players.get(player);
+        npc.findPath();
+        char currmove = npc.currPath.get(0);
+        switch (currmove) {
+            case ('w'):
+                npc.xPos--;
+            case ('a'):
+                npc.yPos--;
+            case ('s'):
+                npc.xPos++;
+            case ('d'):
+                npc.yPos++;
+        }
+        if (map[npc.xPos][npc.yPos] == 'd') {
+            enterRoomNPC(npc, npc.xPos, npc.yPos);
+            return false;
+        }
+        else return true; // filler b/c npc never makes wrong moves
+    }
+
     public boolean moveplayer(int player) {
+        if (players.get(player).isNPC) {
+            return movenpc(player);
+        }
         Player play = players.get(player);
+        
         boolean valid = false;
         String move = new String();
         while (valid == false) {
@@ -176,6 +205,24 @@ public class map {
             return false;
         }
         return true;
+    }
+    public boolean checkCollisionNPC(int x, int y) {
+        if (map[x][y] == ' ') return false;
+        else if (map[x][y] == 'x') {
+            return true;
+        }
+        else if (map[x][y] == 'd') {
+            return false;
+        }
+        return true;
+    }
+
+    public void enterRoomNPC(NPC p, int x, int y) {
+        int[] currcoords = new int[]{x, y};
+        Room roomtoenter = doors.get(currcoords);
+        p.currentRoom = roomtoenter;
+        p.guess();
+        return;
     }
 
     public void enterRoom(Player p, int x, int y) {

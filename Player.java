@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.util.*;
 
 public class Player {
@@ -13,7 +12,11 @@ public class Player {
     public String roomsGuessed;
     public ArrayList<String> hand;
     public Player nextplayer;
+    public boolean isNPC = false;
 
+    public Player() {
+
+    }
     public Player(String n) {
         currentRoom = null;
         name = n;

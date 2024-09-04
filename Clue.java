@@ -7,7 +7,7 @@ public class Clue {
             for (int i = 0; i < gamemap.players.size(); i ++) {
                 int roll = 1 + (int) (Math.random() * 6);
                 for (int j = 0; j < roll; j++) {
-                    if (gamemap.moveplayer(i)) break;
+                    if (!gamemap.moveplayer(i)) break;
                 }
             }
 
