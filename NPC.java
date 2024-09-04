@@ -35,8 +35,8 @@ public class NPC extends Player {
             int targety = targetCoord[1];
             ArrayList<int[]> forbfs = new ArrayList<int[]>(); // argh
             String path = BFS(0, "", targetx, targety, xPos, yPos, forbfs);
-            if (path.a < minmoves) {
-                minmoves = path.a;
+            if (path.length() < minmoves) {
+                minmoves = path.length();
                 mincoords = targetCoord;
             }
         }
@@ -121,7 +121,7 @@ public class NPC extends Player {
     private class Triplet<A, B, C> {
         public A a;
         public B b;
-        public C c
+        public C c;
         public Triplet(A thisa, B thisb, C thisc) {
             a = thisa;
             b = thisb;

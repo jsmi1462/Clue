@@ -66,7 +66,7 @@ public class Player {
     }
     
     public Player clone() {
-        Player p = new Player(name);
+        Player p = new Player(this.name);
         return p;
 
     }
