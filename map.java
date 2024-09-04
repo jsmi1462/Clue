@@ -6,6 +6,7 @@ public class map {
     public ArrayList<Player> players = new ArrayList<Player>(); // list of players, will need to add some sort of method in map that implements the cll............
     public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
+    public String[] answer = new String[3];
 
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
@@ -140,6 +141,7 @@ public class map {
         if (map[x][y])
         return true; // placeholder
     }
+
     public String playerstring() {
         String output = "Number of NPCs: " + (6 - nplay);
         output += "\n" + "Real Players:\n";
@@ -148,6 +150,49 @@ public class map {
         }
         return output;
     }
+
+//Gant Section Start
+
+    public void dealCards() {
+        ArrayList<String> cards = new ArrayList<String>();
+        String[] weaponCards = {"Knife", "Lead Pipe", "Pistol", "Rope", "Candlestick"};
+        String[] roomCards = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billiard Room", "Conservatory", "Ball Room", "Kitchen"};
+        for (int i = 0; i < nplay; i++) {
+            cards.add(players.get(i).name);
+        }
+        for (int i = 0; i < 15; i++) { 
+            if (i < 6) {
+                cards.add(weaponCards[i]);
+            } else {
+                cards.add(roomCards[i]);
+            }
+        }
+        ArrayList<String> temp = cards;
+        int x = (int) (Math.random() * 6);
+        answer[0] = temp.get(x);
+        temp.remove(x);
+        x = (int) (Math.random() * 11) + 5;
+        answer[1] = temp.get(x);
+        temp.remove(x);
+        x = (int) (Math.random() * 19) + 11;
+        answer[2] = temp.get(x);
+        temp.remove(x);
+        for (int i = 0; i < temp.size(); i++) {
+            x = (int) (Math.random() * temp.size());
+            players.get(i / 6).hand.add(temp.get(x));
+            temp.remove(x);
+        }
+        
+    }
+
+
+
+
+
+
+
+//Gant Section End
+
     public String toString() {
         String output = "Current Map: \n------------------------\n";
         for (char[] row: map) {

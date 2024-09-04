@@ -7,16 +7,22 @@ public class Player {
     public int xPos;
     public int yPos;
     public Room currentRoom;
+    public Player nextPlayer;
     public String name;
     public String namesGuessed;
     public String weaponsGuessed;
     public String roomsGuessed;
     public ArrayList<String> hand;
+    public ArrayList<String> guesses;
+    public Scorecard card;
 
-    public Player(int xP, int yP, String n) {
+    public Player(int xP, int yP, String n, Player next) {
         currentRoom = null;
         name = n;
+        nextPlayer = next;
         roll();
+        hand = new ArrayList<String>();
+        guesses = new ArrayList<String>();
 /*      do {
             System.out.print("Choose your character: + \r\n"
                 + "Colonel Mustard + \r\n"
@@ -44,7 +50,40 @@ public class Player {
     }
 
     public void guess() {
-        ArrayList<String> guesses = new ArrayList<>();
+        ArrayList<String> tempGuesses = new ArrayList<String>();
+        int firstParse = (int) (Math.random() * 3);
+        boolean answer = false;
+        System.out.println(card);
+        System.out.print("You are in the " + currentRoom.name + " right now.\r\n"
+            + "Please type the name of the character you would like to accuse: ");
+        tempGuesses.add(input.nextLine());
+        System.out.print("Please type the name of the weapon you would like to guess: ");
+        tempGuesses.add(input.nextLine());
+        tempGuesses.add(currentRoom.name);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (tempGuesses.get(firstParse).equalsIgnoreCase(nextPlayer.hand.get(j))) {
+                    guesses.add(tempGuesses.get(firstParse));
+                    answer = false;
+                    System.out.println(nextPlayer.name + " has revealed this card to you: " + tempGuesses.get(firstParse));
+                    break;
+                } else {
+                    answer = true;
+                }
+            }
+            if (firstParse / 2 == 0) {
+                firstParse++;
+            } else if (!answer) {
+                break;
+            } else if (i == 2) {
+                break;
+            } else {
+                firstParse = 0;
+            }
+        }
+
+
+
         System.out.print("Your hand: " + hand + "\r\n"
             + "Cards revealed:\r\n"
             + "    People: " + namesGuessed + "\r\n"
@@ -60,6 +99,9 @@ public class Player {
         guesses.add(currentRoom.name);
         System.out.println(guesses.get(0) + ", " + guesses.get(1) + ", " + guesses.get(2));
     }
+
+
+
 
     private class Scorecard {
         private HashMap<String, String> people;
