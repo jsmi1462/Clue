@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.util.*;
 
 public class Player {
@@ -123,14 +122,18 @@ public class Player {
 
 
         private Scorecard() {
-
+            String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
+            for (int w = 0; w < 6; w++) {
+                weapons.put();
+            }
         }
 
         public void update() {
             Player tempPlayer = nextPlayer;
-            people.put(name, "O")
-            for (int p = 0; p < 6; p++) {
-                people.put(players.)
+            people.put(name, "O");
+            for (int p = 0; p < 5; p++) {
+                people.put(tempPlayer.name, "O");
+                tempPlayer = tempPlayer.nextPlayer;
             }
         }
 
