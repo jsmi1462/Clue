@@ -23,6 +23,7 @@ public class Player {
         roll();
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
+        card = new Scorecard();
 /*      do {
             System.out.print("Choose your character: + \r\n"
                 + "Colonel Mustard + \r\n"
@@ -123,6 +124,14 @@ public class Player {
 
         private Scorecard() {
 
+        }
+
+        public void update() {
+            Player tempPlayer = nextPlayer;
+            people.put(name, "O")
+            for (int p = 0; p < 6; p++) {
+                people.put(players.)
+            }
         }
 
         public String toString() {
