@@ -68,6 +68,13 @@ public class Player {
                         guesses.add(tempGuesses.get(firstParse));
                         answer = false;
                         System.out.println(tempNext.name + " has revealed this card to you: " + tempGuesses.get(firstParse));
+                        if (firstParse == 0) {
+                            card.setPeople(tempGuesses.get(firstParse), "X");
+                        } else if (firstParse == 1) {
+                            card.setWeapons(tempGuesses.get(firstParse), "X");
+                        } else {
+                            card.setRooms(tempGuesses.get(firstParse), "X");
+                        }
                         break;
                     } else {
                         answer = true;
@@ -115,16 +122,20 @@ public class Player {
 
 
 
-    private class Scorecard {
+    public class Scorecard {
         private HashMap<String, String> people;
         private HashMap<String, String> weapons;
         private HashMap<String, String> rooms;
 
 
-        private Scorecard() {
+        public Scorecard() {
             String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
+            String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
             for (int w = 0; w < 6; w++) {
-                weapons.put();
+                weapons.put(weaponCards[w], "O");
+            }
+            for (int r = 0; r < 9; r++) {
+                rooms.put(roomCards[r], "O");
             }
         }
 
@@ -135,6 +146,30 @@ public class Player {
                 people.put(tempPlayer.name, "O");
                 tempPlayer = tempPlayer.nextPlayer;
             }
+        }
+
+        public HashMap<String, String> getPeople() {
+            return people;
+        }
+
+        public void setPeople(String key, String value) {
+            people.put(key, value);
+        }
+
+        public HashMap<String, String> getWeapons() {
+            return weapons;
+        }
+
+        public void setWeapons(String key, String value) {
+            weapons.put(key, value);
+        }
+
+        public HashMap<String, String> getRooms() {
+            return rooms;
+        }
+
+        public void setRooms(String key, String value) {
+            rooms.put(key, value);
         }
 
         public String toString() {
