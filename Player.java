@@ -126,6 +126,7 @@ public class Player {
         private HashMap<String, String> people;
         private HashMap<String, String> weapons;
         private HashMap<String, String> rooms;
+        private ArrayList<Player> players;
 
 
         public Scorecard() {
@@ -140,12 +141,15 @@ public class Player {
         }
 
         public void update() {
+            players = new ArrayList<Player>();
             Player tempPlayer = nextPlayer;
             people.put(name, "O");
             for (int p = 0; p < 5; p++) {
                 people.put(tempPlayer.name, "O");
+                players.add(tempPlayer);
                 tempPlayer = tempPlayer.nextPlayer;
             }
+            players.add(0, tempPlayer.nextPlayer);
         }
 
         public HashMap<String, String> getPeople() {
@@ -175,8 +179,8 @@ public class Player {
         public String toString() {
             String display = "";
             display = "_________________________\r\n"
-                + "|     |" + name + "\r\n"
-                + "|";
+                + "|     | " + name + " | " + players.get(1).name + " | " + players.get(2).name + " | " + players.get(3).name + " | " + players.get(4).name + " | " + players.get(5).name + " |\r\n"
+                + "| Candlestick | " + people.get("Candlestick");
         }
     }
 
