@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import javax.print.attribute.standard.PrinterMessageFromOperator;
 
 public class map {
     public char[][] map = new char[25][24]; // hardcoded map
@@ -50,7 +51,6 @@ public class map {
             {24, 14}};
         for (int i = 0; i < StartingPos.length; i ++) { 
             int[] pos = StartingPos[i];
-            map[pos[0]][pos[1]] = (char) i;
             players.get(i).xPos = pos[0];
             players.get(i).yPos = pos[1];
         }
@@ -119,13 +119,12 @@ public class map {
             map[rowIndex][counter] = c;
             counter++;
         }
-        if (counter < 23) {
-            while (counter < 23) {
-                counter ++;
+        if (counter < 24) {
+            while (counter < 24) {
                 map[rowIndex][counter] = ' ';
+                counter ++;
             }
         }
-        return;
     }
 
     public boolean movenpc (int player) {
@@ -184,9 +183,10 @@ public class map {
                     else System.out.println("Move invalid.");
                 }
                 else System.out.println("Move invalid. You are already at the top of the board.");
+                break;
             case ("a"):
                 if (play.yPos > 0) {
-                    if (!checkCollision(players.get(player), play.xPos - 1, play.yPos)) {
+                    if (!checkCollision(players.get(player), play.xPos, play.yPos - 1)) {
                         System.out.println("You moved left.");
                         players.get(player).yPos--;
                         valid = true;
@@ -194,6 +194,7 @@ public class map {
                     else System.out.println("Move invalid.");
                 }
                 else System.out.println("Move invalid. You are already at the left edge of the board.");
+                break;
             case ("s"):
                 if (play.xPos < 24) {
                     if (!checkCollision(players.get(player), play.xPos + 1, play.yPos)) {
@@ -204,9 +205,10 @@ public class map {
                     else System.out.println("Move invalid.");
                 }
                 else System.out.println("Move invalid. You are already at the bottom of the board.");
+                break;
             case ("d"):
                 if (play.yPos < 23) {
-                    if (!checkCollision(players.get(player), play.xPos + 1, play.yPos)) {
+                    if (!checkCollision(players.get(player), play.xPos, play.yPos + 1)) {
                         System.out.println("You moved right.");
                         players.get(player).yPos++;
                         valid = true;
@@ -214,14 +216,17 @@ public class map {
                     else System.out.println("Move invalid.");
                 }
                 else System.out.println("Move invalid. You are already at the right edge of the board.");
+                break;
         }
         }
-        if (map[play.xPos][play.yPos] == 'd') return false;
-        else return true;
+        return (map[play.xPos][play.yPos] != 'd');
     } 
 
     public boolean checkCollision(Player p, int x, int y) {
-        if (map[x][y] == ' ') return false;
+        System.out.println("Index  " + x +  " " + y + " is a " + map[x][y]);
+        if (map[x][y] == ' ') {
+            return false;
+        }
         else if (map[x][y] == 'x') {
             System.out.println("You cannot move into walls.");
             return true;
@@ -230,8 +235,9 @@ public class map {
             enterRoom(p, x, y);
             return false;
         }
-        return true;
+        return false;
     }
+
     public boolean checkCollisionNPC(int x, int y) {
         if (map[x][y] == ' ') return false;
         else if (map[x][y] == 'x') {
@@ -267,9 +273,16 @@ public class map {
         }
         return output;
     }
-
+    @Override
     public String toString() {
-        char[][] printmap = map;
+        String output = "Current Map: \n------------------------\n";
+
+        char[][] printmap = new char[25][24];
+        for (int i =0; i < map.length; i ++) {
+            for (int j = 0; j < map[i].length; j++) {
+                printmap[i][j] = map[i][j];
+            }
+        }
         ArrayList<int[]> changesquares = new ArrayList<int[]>();
         for (int i = 0; i < players.size(); i ++) {
             changesquares.add(new int[]{players.get(i).xPos, players.get(i).yPos});
@@ -277,7 +290,7 @@ public class map {
         for (int i = 0; i < changesquares.size(); i ++) {
             printmap[changesquares.get(i)[0]][changesquares.get(i)[1]] = (char)('0' + i);
         }
-        String output = "Current Map: \n------------------------\n";
+        
         for (int i = 0; i < printmap.length; i ++) {
             for (int j = 0; j < printmap[i].length; j++) {
                 output += printmap[i][j];
