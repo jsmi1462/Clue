@@ -173,8 +173,10 @@ public class Player {
         }
 
         public String toString() {
-            System.out.println("_________________________");
-            System.out.print("|     ");
+            String display = "";
+            display = "_________________________\r\n"
+                + "|     |" + name + "\r\n"
+                + "|";
         }
     }
 
