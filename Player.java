@@ -39,26 +39,44 @@ public class Player {
         players.add(0, tempNext.nextPlayer);
     }
 
-    public void guess() {
+    public void guess() throws InterruptedException {
         ArrayList<String> tempGuesses = new ArrayList<String>();
         Player tempNext = nextPlayer;
-        int firstParse = (int) (Math.random() * 3);
-        boolean answer = false;
+        int firstParse = (int) (Math.random() * 3); //randomizes guesses to compare
+        boolean answer = false; //helps determine
         System.out.println(card); //Displays Scorecard
-        System.out.print("You are in the " + currentRoom.name + " right now.\r\n"
-            + "Please type the name of the character you would like to accuse: ");
-        tempGuesses.add(input.nextLine());
-        System.out.print("Please type the name of the weapon you would like to guess: ");
-        tempGuesses.add(input.nextLine());
+        boolean invalid = true;
+        do {
+            try {
+                System.out.print("You are in the " + currentRoom.name + " right now.\r\n"
+                    + "Please type the name of the character you would like to accuse: ");
+                tempGuesses.add(input.nextLine());
+            } catch (Exception e) {
+                System.out.println("Invalid input: Please try again.");
+                continue;
+            }
+            invalid = false;
+        } while (invalid);
+        invalid = true;
+        do {
+            try {
+                System.out.print("Please type the name of the weapon you would like to guess: ");
+                tempGuesses.add(input.nextLine());
+            } catch (Exception e) {
+                System.out.println("Invalid input: Please try again.");
+                continue;
+            }
+            invalid = false;
+        } while (invalid);
         tempGuesses.add(currentRoom.name);
-        for (int p = 0; p < 6; p++) {
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (tempGuesses.get(firstParse).equalsIgnoreCase(tempNext.hand.get(j))) {
+        for (int p = 0; p < 6; p++) { //loops through players
+            for (int i = 0; i < 3; i++) { //loops through guesses
+                for (int j = 0; j < 3; j++) { //loops through current players cards & finds match
+                    if (tempGuesses.get(firstParse).equalsIgnoreCase(tempNext.hand.get(j))) { //true if matched
                         guesses.add(tempGuesses.get(firstParse));
-                        answer = false;
+                        answer = false; //not final answer
                         System.out.println(tempNext.name + " has revealed this card to you: " + tempGuesses.get(firstParse));
-                        if (firstParse == 0) {
+                        if (firstParse == 0) { //determines which type of card has been revealed
                             card.getPlayers().get(p).card.setPeople(tempGuesses.get(firstParse), "X");
                         } else if (firstParse == 1) {
                             card.getPlayers().get(p).card.setWeapons(tempGuesses.get(firstParse), "X");
@@ -89,14 +107,26 @@ public class Player {
                     card.getPlayers().get(p).card.setRooms(tempGuesses.get(i), "O");
                 }
             }
+            System.out.println("You find that " + tempNext.name + " does not have any of the cards that you guessed! This discovery has been recorded!");
             if (!answer) {
                 break;
             } else {
                 tempNext = tempNext.nextPlayer;
             }
         }
-        if (!answer) {
-            System.out.println("Nobody had the cards you guessed!");
+        if (answer) {
+            System.out.println("Nobody had the cards you guessed...");
+            String drama = "That's quite the revelation...";
+            char[] chars = drama.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                if (i > chars.length - 4) {
+                    Thread.sleep(500);
+                    System.out.print(chars[i]);
+                } else {
+                    Thread.sleep(100);
+                    System.out.print(chars[i]);
+                }
+            }
         }
     }
 
