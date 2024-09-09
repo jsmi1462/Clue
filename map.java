@@ -10,7 +10,6 @@ public class map {
     public boolean gameover;
     public ArrayList<String> answer;
     
-    
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
         //add map
         assignDoorCoors();
@@ -82,18 +81,19 @@ public class map {
         
         // add player controlled players with name input
         for (int i = 0; i < nplayers; i ++) {
-             String playername = "default_player_" + i;
-             System.out.println("Enter name for Player " + i + ":");
-             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-             try {
-             playername = input.readLine();
-             } catch (IOException e) {
-                continue;
-             }
-             System.out.println("Player " + i + " is " + playername + "!"); 
-             Player temp = new Player(playername);
-             players.add(temp.clone());
+            String playername = "default_player_" + i;
+            System.out.println("Enter name for Player " + i + ":");
+            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+            try {
+            playername = input.readLine();
+            } catch (IOException e) {
+               continue;
             }
+            System.out.println("Player " + i + " is " + playername + "!"); 
+            Player temp = new Player(playername);
+            players.add(temp.clone());
+        }
+    
         String[] npcnames = new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon"};
         for (int i = 0; i < 6 - nplayers; i ++) {
             String npcname = npcnames[(int) Math.random()*4];

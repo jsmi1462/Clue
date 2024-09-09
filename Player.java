@@ -71,6 +71,10 @@ public class Player {
 
     }
 
+    public String toString() {
+        return this.name;
+    }
+
     private class Scorecard {
         private HashMap<String, String> people;
         private HashMap<String, String> weapons;
