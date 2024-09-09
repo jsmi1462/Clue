@@ -118,14 +118,5 @@ public class NPC extends Player {
         }
     }
 
-    private class Triplet<A, B, C> {
-        public A a;
-        public B b;
-        public C c;
-        public Triplet(A thisa, B thisb, C thisc) {
-            a = thisa;
-            b = thisb;
-            c = thisc;
-        }
-    }
+    private record Triplet<A, B, C>(A a, B b, C c) {}
 }

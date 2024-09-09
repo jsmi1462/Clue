@@ -59,8 +59,7 @@ public class map {
         
     }
     
-    public void assignDoorCoors()
-    {
+    public void assignDoorCoors() {
         HashMap<String, Room> rooms = new HashMap<String, Room>();
         String[] uniqueRoomNames = {"study", "hall", "lounge", "library", "dining room", "billard room",
         "ball room", "kitchen", "conservatory"};
@@ -69,15 +68,15 @@ public class map {
         int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,8},{19,15}};
         for (int i = 0; i < uniqueRoomNames.length; i++)
         {
-        rooms.put(uniqueRoomNames[i],new Room(uniqueRoomNames[i])); //names and rooms
+            rooms.put(uniqueRoomNames[i],new Room(uniqueRoomNames[i])); //names and rooms
         }
         for (int i = 0; i <doorCoors.length; i++)
         {
-        doors.put(doorCoors[i], rooms.get(roomNames[i])); //coordinates and rooms
+            doors.put(doorCoors[i], rooms.get(roomNames[i])); //coordinates and rooms
         }
     }
 
-    public void addplayers (int nplayers) {
+    public void addplayers(int nplayers) {
         //add NPC players
         
         
@@ -172,81 +171,79 @@ public class map {
             //    amove = (move.equals(validmove));
             //}
             //}
-        switch (move) {
-            case ("w"):
-                if (play.xPos > 0) {
-                    if (!checkCollision(players.get(player), play.xPos - 1, play.yPos)) {
-                        System.out.println("You moved up.");
-                        players.get(player).xPos--;
-                        valid = true;
+            switch (move) {
+                case "w" -> {
+                    if (play.xPos > 0) {
+                        if (!checkCollision(players.get(player), play.xPos - 1, play.yPos)) {
+                            System.out.println("You moved up.");
+                            players.get(player).xPos--;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
                     }
-                    else System.out.println("Move invalid.");
+                    else System.out.println("Move invalid. You are already at the top of the board.");
                 }
-                else System.out.println("Move invalid. You are already at the top of the board.");
-                break;
-            case ("a"):
-                if (play.yPos > 0) {
-                    if (!checkCollision(players.get(player), play.xPos, play.yPos - 1)) {
-                        System.out.println("You moved left.");
-                        players.get(player).yPos--;
-                        valid = true;
+                case "a" -> {
+                    if (play.yPos > 0) {
+                        if (!checkCollision(players.get(player), play.xPos, play.yPos - 1)) {
+                            System.out.println("You moved left.");
+                            players.get(player).yPos--;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
                     }
-                    else System.out.println("Move invalid.");
+                    else System.out.println("Move invalid. You are already at the left edge of the board.");
                 }
-                else System.out.println("Move invalid. You are already at the left edge of the board.");
-                break;
-            case ("s"):
-                if (play.xPos < 24) {
-                    if (!checkCollision(players.get(player), play.xPos + 1, play.yPos)) {
-                        System.out.println("You moved down.");
-                        players.get(player).xPos++;
-                        valid = true;
+                case "s" -> {
+                    if (play.xPos < 24) {
+                        if (!checkCollision(players.get(player), play.xPos + 1, play.yPos)) {
+                            System.out.println("You moved down.");
+                            players.get(player).xPos++;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
                     }
-                    else System.out.println("Move invalid.");
+                    else System.out.println("Move invalid. You are already at the bottom of the board.");
                 }
-                else System.out.println("Move invalid. You are already at the bottom of the board.");
-                break;
-            case ("d"):
-                if (play.yPos < 23) {
-                    if (!checkCollision(players.get(player), play.xPos, play.yPos + 1)) {
-                        System.out.println("You moved right.");
-                        players.get(player).yPos++;
-                        valid = true;
+                case "d" -> {
+                    if (play.yPos < 23) {
+                        if (!checkCollision(players.get(player), play.xPos, play.yPos + 1)) {
+                            System.out.println("You moved right.");
+                            players.get(player).yPos++;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
                     }
-                    else System.out.println("Move invalid.");
+                    else System.out.println("Move invalid. You are already at the right edge of the board.");
                 }
-                else System.out.println("Move invalid. You are already at the right edge of the board.");
-                break;
+            }
         }
-        }
-        return (map[play.xPos][play.yPos] != 'd');
+        return map[play.xPos][play.yPos] != 'd';
     } 
 
     public boolean checkCollision(Player p, int x, int y) {
         System.out.println("Index  " + x +  " " + y + " is a " + map[x][y]);
         if (map[x][y] == ' ') {
             return false;
-        }
-        else if (map[x][y] == 'x') {
+        } else if (map[x][y] == 'x') {
             System.out.println("You cannot move into walls.");
             return true;
-        }
-        else if (map[x][y] == 'd') {
+        } else if (map[x][y] == 'd') {
             enterRoom(p, x, y);
             return false;
         }
         return false;
     }
 
-    public boolean checkCollisionNPC(int x, int y) {
-        if (map[x][y] == ' ') return false;
-        else if (map[x][y] == 'x') {
-            return true;
-        }
-        else if (map[x][y] == 'd') {
-            return false;
-        }
-        return true;
+    public boolean checkCollisionNPC(NPC npc, int x, int y) {
+        return switch (map[x][y]) {
+            case 'x' -> true;
+            case 'd' -> {
+                enterRoomNPC(npc, x, y);
+                yield false;
+            }
+            default -> false;
+        };
     }
 
     public void enterRoomNPC(NPC p, int x, int y) {

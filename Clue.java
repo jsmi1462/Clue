@@ -8,7 +8,7 @@ public class Clue {
                     for (int j = roll; j > 0 ; j--) {
                         System.out.println("Player " + i + " is playing with " + j + " moves remaining this turn!");
                         System.out.println(gamemap);
-                        System.out.println("Player " + i + "is currently in space " + gamemap.players.get(i).xPos + " , " + gamemap.players.get(i).yPos);
+                        //System.out.println("Player " + i + "is currently in space " + gamemap.players.get(i).xPos + " , " + gamemap.players.get(i).yPos);
                         if (!gamemap.moveplayer(i)) break;
                 }
             }
