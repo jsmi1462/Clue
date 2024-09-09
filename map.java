@@ -7,6 +7,7 @@ public class map {
     public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
     public String[] answer = new String[3];
+    public ArrayList<String> cards = new ArrayList<String>();
 
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
@@ -74,6 +75,10 @@ public class map {
         for (int i = 0; i < 6 - nplayers; i ++) {
             Player temp = new NPC();
             players.add(temp.clone());
+        }
+
+        for (int i = 0; i < 6; i++) {
+            players.get(i).update();
         }
     }
 
@@ -154,9 +159,8 @@ public class map {
 //Gant Section Start
 
     public void dealCards() {
-        ArrayList<String> cards = new ArrayList<String>();
-        String[] weaponCards = {"Knife", "Lead Pipe", "Pistol", "Rope", "Candlestick"};
-        String[] roomCards = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billiard Room", "Conservatory", "Ball Room", "Kitchen"};
+        String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
+        String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
         for (int i = 0; i < nplay; i++) {
             cards.add(players.get(i).name);
         }
@@ -167,7 +171,10 @@ public class map {
                 cards.add(roomCards[i]);
             }
         }
-        ArrayList<String> temp = cards;
+        ArrayList<String> temp = new ArrayList<String>();
+        for (int c = 0; c < cards.size(); c++) {
+            temp.add(cards.get(c));
+        }
         int x = (int) (Math.random() * 6);
         answer[0] = temp.get(x);
         temp.remove(x);
@@ -179,17 +186,13 @@ public class map {
         temp.remove(x);
         for (int i = 0; i < temp.size(); i++) {
             x = (int) (Math.random() * temp.size());
-            players.get(i / 6).hand.add(temp.get(x));
+            players.get(i / 3).hand.add(temp.get(x));
             temp.remove(x);
         }
-        
+        for (int i = 0; i < 6; i++) {
+            players.get(i).card.update();
+        }
     }
-
-
-
-
-
-
 
 //Gant Section End
 

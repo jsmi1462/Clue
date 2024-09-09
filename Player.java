@@ -8,11 +8,9 @@ public class Player {
     public Room currentRoom;
     public Player nextPlayer;
     public String name;
-    public String namesGuessed;
-    public String weaponsGuessed;
-    public String roomsGuessed;
     public ArrayList<String> hand;
     public ArrayList<String> guesses;
+    public ArrayList<Player> players;
     public Scorecard card;
 
     public Player(int xP, int yP, String n, Player next) {
@@ -22,31 +20,23 @@ public class Player {
         roll();
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
+        players = new ArrayList<Player>();
         card = new Scorecard();
-/*      do {
-            System.out.print("Choose your character: + \r\n"
-                + "Colonel Mustard + \r\n"
-                + "Mr. Green + \r\n"
-                + "Mrs. Peacock + \r\n"
-                + "Professor Plum + \r\n" 
-                + "Mrs. Scarlet + \r\n"
-                + "Mrs. White + \r\n"
-                + "Input: ");
-            try {
-                character = input.next();
-                break;
-            } catch (Exception e) {
-                System.out.println("Please input a valid character.");
-                continue;
-            }
-        } while (true);
-*/
     }
 
     public void roll() {
         int rollNum;
         rollNum = ((int) Math.random() * 5 + 1) + ((int) Math.random() * 5 + 1);
         roll = rollNum;
+    }
+
+    public void update() {
+        Player tempNext = nextPlayer;
+        for (int i = 0; i < 5; i++) {
+            players.add(tempNext);
+            tempNext = tempNext.nextPlayer;
+        }
+        players.add(0, tempNext.nextPlayer);
     }
 
     public void guess() {
@@ -69,11 +59,11 @@ public class Player {
                         answer = false;
                         System.out.println(tempNext.name + " has revealed this card to you: " + tempGuesses.get(firstParse));
                         if (firstParse == 0) {
-                            card.setPeople(tempGuesses.get(firstParse), "X");
+                            card.getPlayers().get(p).card.setPeople(tempGuesses.get(firstParse), "X");
                         } else if (firstParse == 1) {
-                            card.setWeapons(tempGuesses.get(firstParse), "X");
+                            card.getPlayers().get(p).card.setWeapons(tempGuesses.get(firstParse), "X");
                         } else {
-                            card.setRooms(tempGuesses.get(firstParse), "X");
+                            card.getPlayers().get(p).card.setRooms(tempGuesses.get(firstParse), "X");
                         }
                         break;
                     } else {
@@ -90,6 +80,15 @@ public class Player {
                     firstParse = 0;
                 }
             }
+            for (int i = 0; i < 3; i++) {
+                if (firstParse == 0) {
+                    card.getPlayers().get(p).card.setPeople(tempGuesses.get(i), "O");
+                } else if (firstParse == 1) {
+                    card.getPlayers().get(p).card.setWeapons(tempGuesses.get(i), "O");
+                } else {
+                    card.getPlayers().get(p).card.setRooms(tempGuesses.get(i), "O");
+                }
+            }
             if (!answer) {
                 break;
             } else {
@@ -99,27 +98,23 @@ public class Player {
         if (!answer) {
             System.out.println("Nobody had the cards you guessed!");
         }
-
-
-/*
-        System.out.print("Your hand: " + hand + "\r\n"
-            + "Cards revealed:\r\n"
-            + "    People: " + namesGuessed + "\r\n"
-            + "    Weapons: " + weaponsGuessed + "\r\n"
-            + "    Rooms: " + roomsGuessed + "\r\n"
-            + "\r\n"
-            + "Your guess:\r\n"
-            + "    Person: ");
-        guesses.add(input.next());
-        System.out.print("    Weapon: ");
-        guesses.add(input.next());
-        System.out.println("    Room: " + currentRoom.name);
-        guesses.add(currentRoom.name);
-        System.out.println(guesses.get(0) + ", " + guesses.get(1) + ", " + guesses.get(2));
-*/
     }
 
-
+    public Player clone() {
+        Player temp = new Player(xPos, yPos, name, nextPlayer);
+        temp.currentRoom = currentRoom;
+        for (int i = 0; i < 3; i++) {
+            temp.hand.add(hand.get(i));
+        }
+        for (int i = 0; i < guesses.size(); i++) {
+            temp.guesses.add(guesses.get(i));
+        }
+        for (int i = 0; i < 6; i++) {
+            temp.players.add(players.get(i));
+        }
+        temp.card = card.clone();
+        return temp;
+    }
 
 
     public class Scorecard {
@@ -127,30 +122,60 @@ public class Player {
         private HashMap<String, String> weapons;
         private HashMap<String, String> rooms;
         private ArrayList<Player> players;
+        private String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
+        private String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
 
 
         public Scorecard() { //Constructor that fills hashmaps
-            String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
-            String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
             for (int w = 0; w < 6; w++) {
-                weapons.put(weaponCards[w], "O");
+                weapons.put(weaponCards[w], " ");
             }
             for (int r = 0; r < 9; r++) {
-                rooms.put(roomCards[r], "O");
+                rooms.put(roomCards[r], " ");
             }
         }
 
         public void update() { //Called only one time once all players are created in Map
             players = new ArrayList<Player>();
-            Player tempPlayer = nextPlayer;
-            people.put(name, "O");
+            Player tempPlayer = nextPlayer.clone();
+            people.put(name, " ");
             for (int p = 0; p < 5; p++) {
-                people.put(tempPlayer.name, "O");
+                people.put(tempPlayer.name, " ");
                 players.add(tempPlayer);
-                tempPlayer = tempPlayer.nextPlayer;
+                tempPlayer = tempPlayer.nextPlayer.clone();
             }
-            players.add(0, tempPlayer.nextPlayer);
+            players.add(0, tempPlayer.nextPlayer.clone());
+            boolean room;
+            for (int i = 0; i < 3; i++) {
+                room = true;
+                for (int j = 0; j < 6; j++) {
+                    if (hand.get(i).equals(players.get(j).name)) {
+                        people.put(players.get(j).name, "X");
+                        room = false;
+                    } else if (hand.get(i).equals(weaponCards[j])) {
+                        weapons.put(weaponCards[j], "X");
+                        room = false;
+                    }
+                }
+                if (room) {
+                    rooms.put(hand.get(i), "X");
+                }
+            }
         }
+
+        public Scorecard clone() {
+            Scorecard temp = new Scorecard();
+            for (int i = 0; i < 6; i++) {
+                temp.people.put(players.get(i).name, people.get(players.get(i).name));
+                temp.weapons.put(weaponCards[i], weapons.get(weaponCards[i]));
+                temp.setPlayers(players.get(i));
+            }
+            for (int i = 0; i < 9; i++) {
+                temp.rooms.put(roomCards[i], rooms.get(roomCards[i]));
+            }
+            return temp;
+        }
+
                 //Getters and Setters Below
         public HashMap<String, String> getPeople() {
             return people;
@@ -174,6 +199,14 @@ public class Player {
 
         public void setRooms(String key, String value) {
             rooms.put(key, value);
+        }
+        
+        public ArrayList<Player> getPlayers() {
+            return players;
+        }
+
+        public void setPlayers(Player p) {
+            players.add(p);
         }
 
         public String toString() {
