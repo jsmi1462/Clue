@@ -88,37 +88,38 @@ public class Player {
                         answer = true;
                     }
                 }
-                if (firstParse / 2 == 0) {
+                if (!answer) { //runs if card is guessed
+                    break;
+                } else if (firstParse / 2 == 0) { //runs if card not guessed, but not all guesses checked
                     firstParse++;
-                } else if (!answer) {
+                } else if (i == 2) { //runs if final guess is not correct
                     break;
-                } else if (i == 2) {
-                    break;
-                } else {
+                } else { // runs if card not guessed, but not all guesses checked, allows cyling because random guesses checked
                     firstParse = 0;
                 }
             }
-            for (int i = 0; i < 3; i++) {
-                if (firstParse == 0) {
-                    card.getPlayers().get(p).card.setPeople(tempGuesses.get(i), "O");
-                } else if (firstParse == 1) {
-                    card.getPlayers().get(p).card.setWeapons(tempGuesses.get(i), "O");
-                } else {
-                    card.getPlayers().get(p).card.setRooms(tempGuesses.get(i), "O");
+            if (answer) {
+                for (int i = 0; i < 3; i++) {
+                    if (firstParse == 0) {
+                        card.getPlayers().get(p).card.setPeople(tempGuesses.get(i), "O");
+                    } else if (firstParse == 1) {
+                        card.getPlayers().get(p).card.setWeapons(tempGuesses.get(i), "O");
+                    } else {
+                        card.getPlayers().get(p).card.setRooms(tempGuesses.get(i), "O");
+                    }
                 }
-            }
-            System.out.println("You find that " + tempNext.name + " does not have any of the cards that you guessed! This discovery has been recorded!");
-            if (!answer) {
+                System.out.println("You find that " + tempNext.name + " does not have any of the cards that you guessed! This discovery has been recorded!");
+            } else if (!answer) {
                 break;
             } else {
                 tempNext = tempNext.nextPlayer;
             }
         }
-        if (answer) {
+        if (answer) { //prints that no one had the cards you guessed
             System.out.println("Nobody had the cards you guessed...");
             String drama = "That's quite the revelation...";
             char[] chars = drama.toCharArray();
-            for (int i = 0; i < chars.length; i++) {
+            for (int i = 0; i < chars.length; i++) { //prints out characters every 0.1 seconds for dramatic effect
                 if (i > chars.length - 4) {
                     Thread.sleep(500);
                     System.out.print(chars[i]);
@@ -130,7 +131,7 @@ public class Player {
         }
     }
 
-    public Player clone() {
+    public Player clone() { //clones player object
         Player temp = new Player(xPos, yPos, name, nextPlayer);
         temp.currentRoom = currentRoom;
         for (int i = 0; i < 3; i++) {
@@ -193,7 +194,7 @@ public class Player {
             }
         }
 
-        public Scorecard clone() {
+        public Scorecard clone() { //clones Scorecard object
             Scorecard temp = new Scorecard();
             for (int i = 0; i < 6; i++) {
                 temp.people.put(players.get(i).name, people.get(players.get(i).name));
