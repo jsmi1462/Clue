@@ -112,6 +112,9 @@ public class map {
             players.get(i).nextPlayer = players.get(i+ 1);
         }
         players.get(players.size() - 1).nextPlayer = players.get(0);
+        for (int i = 0; i < 6; i++) {
+            players.get(i).update();
+        }
     }
 
 
@@ -315,7 +318,7 @@ public class map {
         }
     }
 
-    //Gant Section End
+//Gant Section End
 
     @Override
     public String toString() {
