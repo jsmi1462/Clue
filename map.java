@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import javax.print.attribute.standard.PrinterMessageFromOperator;
 
 public class map {
     public char[][] map = new char[25][24]; // hardcoded map
@@ -9,52 +10,72 @@ public class map {
     public String[] answer = new String[3];
     public ArrayList<String> cards = new ArrayList<String>();
     public boolean gameover;
-
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
         //add map
+        assignDoorCoors();
+        gameover = false;
         this.nplay = nplayers;
         this.addrow("xxxxxxx xxxxxxxx xxxxxxx", 0);
-        this.addrow("xxxxxxx  xxxxxx  xxxxxxx", 1);
-        this.addrow("xxxxxxx  xxxxxx  xxxxxxx", 2);
-        this.addrow("xxxxxxd  xxxxxx  xxxxxxx", 3);
-        this.addrow("x        dxxxxx  xxxxxxx", 4);
-        this.addrow("         xxxxxx  dxxxxxx", 5);
+        this.addrow("x     x  x    x  x     x", 1);
+        this.addrow("x     x  x    x  x     x", 2);
+        this.addrow("xxxxxxd  x    x  x     x", 3);
+        this.addrow("x        d    x  x     x", 4);
+        this.addrow("         x    x  dxxxxxx", 5);
         this.addrow("xxxxxx   xxddxx        x", 6);
-        this.addrow("xxxxxxx", 7);
-        this.addrow("xxxxxxd  xxxxx         x", 8);
-        this.addrow("xxxxxxx  xxxxx  xdxxxxxx", 9);
-        this.addrow("xxxdxx   xxxxx  xxxxxxxx", 10);
-        this.addrow("x        xxxxx  xxxxxxxx", 11);
-        this.addrow("xdxxxx   xxxxx  dxxxxxxx", 12);
-        this.addrow("xxxxxx   xxxxx  xxxxxxxx", 13);
-        this.addrow("xxxxxx   xxxxx  xxxxxxxx", 14);
-        this.addrow("xxxxxd             xxxxx", 15);
+        this.addrow("x     x", 7);
+        this.addrow("x     d  xxxxx         x", 8);
+        this.addrow("x     x  xxxxx  xdxxxxxx", 9);
+        this.addrow("xxxdxx   xxxxx  x      x", 10);
+        this.addrow("x        xxxxx  x      x", 11);
+        this.addrow("xdxxxx   xxxxx  d      x", 12);
+        this.addrow("x    x   xxxxx  x      x", 13);
+        this.addrow("x    x   xxxxx  xxx     ", 14);
+        this.addrow("x    d             xxxxx", 15);
         this.addrow("xxxxxx                 x", 16);
-        this.addrow("x        xdxxxxdx", 17);
-        this.addrow("        xxxxxxxx  xdxxxx", 18);
-        this.addrow("xxxxx   dxxxxxxd  xxxxxx", 19);
-        this.addrow("xxxxxx  xxxxxxxx  xxxxxx", 20);
-        this.addrow("xxxxxx  xxxxxxxx  xxxxxx", 21);
-        this.addrow("xxxxxx  xxxxxxxx  xxxxxx", 22);
+        this.addrow("x       xdxxxxdx", 17);
+        this.addrow("        x      x  xdxxxx", 18);
+        this.addrow("xxxxx   d      d  x    x", 19);
+        this.addrow("x    x  x      x  x    x", 20);
+        this.addrow("x    x  x      x  x    x", 21);
+        this.addrow("x    x  xx    xx  x    x", 22);
         this.addrow("xxxxxxx   xxxx   xxxxxxx", 23);
         this.addrow("xxxxxxxxx xxxx xxxxxxxxx", 24);
-        
         this.addplayers(nplayers);
         System.out.println(this.playerstring());
-        ArrayList<int[]> StartingPos = new ArrayList<int[]>();
-        int[] coords = new int[]{1, 1}; // example coordinates
-        StartingPos.add(coords); // Jack - get starting position coordinates
-        for (int i = 0; i < StartingPos.size(); i ++) { // NOT WORKING UGH put in order on starting coordinates
-            int[] pos = StartingPos.get(i);
-            map[pos[0]][pos[1]] = (char) i;
-
+        int[][] StartingPos = {{0, 16}, 
+            {5, 0},
+            {7, 23},
+            {18, 0},
+            {24, 9},
+            {24, 14}};
+        for (int i = 0; i < StartingPos.length; i ++) { 
+            int[] pos = StartingPos[i];
+            players.get(i).xPos = pos[0];
+            players.get(i).yPos = pos[1];
         }
         System.out.println(this); // Jack - map string is wrong 
 
         
     }
     
+    public void assignDoorCoors() {
+        HashMap<String, Room> rooms = new HashMap<String, Room>();
+        String[] uniqueRoomNames = {"study", "hall", "lounge", "library", "dining room", "billard room",
+        "ball room", "kitchen", "conservatory"};
+        String[] roomNames = {"study", "hall", "lounge", "hall", "hall", "library", "dining room", "library", "billard room", "billard room",
+            "ball room", "ball room", "kitchen", "ball room", "ball room"};
+        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,8},{19,15}};
+        for (int i = 0; i < uniqueRoomNames.length; i++)
+        {
+            rooms.put(uniqueRoomNames[i],new Room(uniqueRoomNames[i])); //names and rooms
+        }
+        for (int i = 0; i <doorCoors.length; i++)
+        {
+            doors.put(doorCoors[i], rooms.get(roomNames[i])); //coordinates and rooms
+        }
+    }
+
     public void addplayers(int nplayers) {
         // add player controlled players with name input
         for (int i = 0; i < nplayers; i ++) {
@@ -104,63 +125,160 @@ public class map {
             map[rowIndex][counter] = c;
             counter++;
         }
-        if (counter < 23) {
-            while (counter < 23) {
-                counter ++;
+        if (counter < 24) {
+            while (counter < 24) {
                 map[rowIndex][counter] = ' ';
+                counter ++;
             }
         }
-        return;
     }
 
-    public void moveplayer(int player) {
+    public boolean movenpc (int player) {
+        NPC npc = (NPC) players.get(player);
+        npc.findPath();
+        char currmove = npc.currPath.get(0);
+        switch (currmove) {
+            case ('w'):
+                npc.xPos--;
+            case ('a'):
+                npc.yPos--;
+            case ('s'):
+                npc.xPos++;
+            case ('d'):
+                npc.yPos++;
+        }
+        if (map[npc.xPos][npc.yPos] == 'd') {
+            enterRoomNPC(npc, npc.xPos, npc.yPos);
+            return false;
+        }
+        else return true; // filler b/c npc never makes wrong moves
+    }
+
+    public boolean moveplayer(int player) {
+        
+        if (players.get(player).isNPC) {
+            System.out.println("NPC " + players.get(player) + " is moving!");
+            return movenpc(player);
+        }
+
         Player play = players.get(player);
+        
         boolean valid = false;
         String move = new String();
         while (valid == false) {
+            //boolean amove = false;
+            //while (amove == false) {
             System.out.println("Enter move: w for up, a for left, d for right, s for down:");
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
             try {
-            
             move = input.readLine();
             } catch (IOException e) {
             continue;
             }
-            String[] validmoves = new String[]{"w", "a", "s", "d"};
-            for (String validmove: validmoves) {
-                if (move == validmove) valid = true;
-            }
-        switch (move) {
-            case ("w"):
-                if (player.xPos > 0) {
-                    if (checkCollision(player.xPos - 1, player.yPos)) {
-                        player.xPos--;
-                        valid = true;
+            //String[] validmoves = new String[]{"w", "a", "s", "d"};
+            //for (String validmove: validmoves) {
+            //    amove = (move.equals(validmove));
+            //}
+            //}
+            switch (move) {
+                case "w" -> {
+                    if (play.xPos > 0) {
+                        if (!checkCollision(players.get(player), play.xPos - 1, play.yPos)) {
+                            System.out.println("You moved up.");
+                            players.get(player).xPos--;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
                     }
-                    else System.out.println();
+                    else System.out.println("Move invalid. You are already at the top of the board.");
                 }
-                else System.out.println("Move invalid. You are already at the top of the board.");
-            case ("a"):
-                if (player.ypox > 0) {
-                    player.yPos--;
-                    valid = true;
+                case "a" -> {
+                    if (play.yPos > 0) {
+                        if (!checkCollision(players.get(player), play.xPos, play.yPos - 1)) {
+                            System.out.println("You moved left.");
+                            players.get(player).yPos--;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
+                    }
+                    else System.out.println("Move invalid. You are already at the left edge of the board.");
                 }
-                else System.out.println("Move invalid. You are already at the top of the board.");
-            case ("s"):
-            case ("d"):
-
-
+                case "s" -> {
+                    if (play.xPos < 24) {
+                        if (!checkCollision(players.get(player), play.xPos + 1, play.yPos)) {
+                            System.out.println("You moved down.");
+                            players.get(player).xPos++;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
+                    }
+                    else System.out.println("Move invalid. You are already at the bottom of the board.");
+                }
+                case "d" -> {
+                    if (play.yPos < 23) {
+                        if (!checkCollision(players.get(player), play.xPos, play.yPos + 1)) {
+                            System.out.println("You moved right.");
+                            players.get(player).yPos++;
+                            valid = true;
+                        }
+                        else System.out.println("Move invalid.");
+                    }
+                    else System.out.println("Move invalid. You are already at the right edge of the board.");
+                }
+            }
         }
-        }
-        player.xPos
-        player.yPos
+        return map[play.xPos][play.yPos] != 'd';
     } 
 
-    public boolean checkCollision(int x, int y) {
-        if (map[x][y])
-        return true; // placeholder
+    public boolean checkCollision(Player p, int x, int y) {
+        System.out.println("Index  " + x +  " " + y + " is a " + map[x][y]);
+        if (map[x][y] == ' ') {
+            return false;
+        } else if (map[x][y] == 'x') {
+            System.out.println("You cannot move into walls.");
+            return true;
+        } else if (map[x][y] == 'd') {
+            enterRoom(p, x, y);
+            return false;
+        }
+        return false;
     }
 
+    public boolean checkCollisionNPC(NPC npc, int x, int y) {
+        return switch (map[x][y]) {
+            case 'x' -> true;
+            case 'd' -> {
+                enterRoomNPC(npc, x, y);
+                yield false;
+            }
+            default -> false;
+        };
+    }
+
+    public void enterRoomNPC(NPC p, int x, int y) {
+        int[] currcoords = new int[]{x, y};
+        Room roomtoenter = doors.get(currcoords);
+        p.currentRoom = roomtoenter;
+        try {
+            p.guess();
+        } catch (Exception e) {
+            return;
+        }
+        return;
+    }
+
+    public void enterRoom(Player p, int x, int y) {
+        int[] currcoords = new int[]{x, y};
+        Room roomtoenter = doors.get(currcoords);
+        System.out.println("Entering room " + roomtoenter.name + ".");
+        p.currentRoom = roomtoenter;
+        try {
+            p.guess();
+        } catch (Exception e) {
+            return;
+        }
+        return;
+    }
     public String playerstring() {
         String output = "Number of NPCs: " + (6 - nplay);
         output += "\n" + "Real Players:\n";
@@ -209,12 +327,28 @@ public class map {
     }
 
 //Gant Section End
+
     @Override
     public String toString() {
         String output = "Current Map: \n------------------------\n";
-        for (char[] row: map) {
-            for (char c : row) {
-                output += c;
+
+        char[][] printmap = new char[25][24];
+        for (int i =0; i < map.length; i ++) {
+            for (int j = 0; j < map[i].length; j++) {
+                printmap[i][j] = map[i][j];
+            }
+        }
+        ArrayList<int[]> changesquares = new ArrayList<int[]>();
+        for (int i = 0; i < players.size(); i ++) {
+            changesquares.add(new int[]{players.get(i).xPos, players.get(i).yPos});
+        }
+        for (int i = 0; i < changesquares.size(); i ++) {
+            printmap[changesquares.get(i)[0]][changesquares.get(i)[1]] = (char)('0' + i);
+        }
+        
+        for (int i = 0; i < printmap.length; i ++) {
+            for (int j = 0; j < printmap[i].length; j++) {
+                output += printmap[i][j];
             }
             output += "\n";
         }
