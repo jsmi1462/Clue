@@ -12,7 +12,7 @@ public class Player {
     public String roomsGuessed;
     public ArrayList<String> hand;
     public Player nextplayer;
-    public boolean isNPC = false;
+    public boolean isNPC;
 
     public Player() {
 
@@ -21,6 +21,7 @@ public class Player {
         currentRoom = null;
         name = n;
         roll();
+        isNPC = false;
 /*      do {
             System.out.print("Choose your character: + \r\n"
                 + "Colonel Mustard + \r\n"

@@ -93,11 +93,16 @@ public class map {
             Player temp = new Player(playername);
             players.add(temp.clone());
         }
-    
-        String[] npcnames = new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon"};
+
+        ArrayList<String> npcnames = new ArrayList<String>();
+        for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon"}) {
+            npcnames.add(n);
+        }
+
         for (int i = 0; i < 6 - nplayers; i ++) {
-            String npcname = npcnames[(int) Math.random()*4];
+            String npcname = npcnames.remove((int) Math.random()* (npcnames.size()));
             NPC temp = new NPC(npcname);
+            System.out.println("NPC " + i + " is " + temp + "!");
             players.add(temp.clone());
         }
         linkplayers();
@@ -149,6 +154,7 @@ public class map {
 
     public boolean moveplayer(int player) {
         if (players.get(player).isNPC) {
+            System.out.println("NPC " + players.get(player) + " is moving!");
             return movenpc(player);
         }
         Player play = players.get(player);
@@ -161,7 +167,6 @@ public class map {
             System.out.println("Enter move: w for up, a for left, d for right, s for down:");
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
             try {
-            
             move = input.readLine();
             } catch (IOException e) {
             continue;

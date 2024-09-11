@@ -13,11 +13,12 @@ public class NPC extends Player {
     public map currMap;
     public Room currTarget;
     public ArrayList<Character> currPath;
-    public boolean isNPC = true; 
+    public boolean isNPC; 
 
     public NPC (String n) {
         currentRoom = null;
         name = n;
+        isNPC = true;
     }
 
     public void findPath() {
@@ -110,6 +111,14 @@ public class NPC extends Player {
             if (!roomsGuessed.contains(room)) {
             }
         }
+    }
+    @Override
+    public NPC clone() {
+        NPC n = new NPC(this.name);
+        return n;
+    }
+    public String toString() {
+        return this.name;
     }
 
     private record Triplet<A, B, C>(A a, B b, C c) {}
