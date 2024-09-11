@@ -195,7 +195,7 @@ public class map {
     }
 
 //Gant Section End
-
+    @Override
     public String toString() {
         String output = "Current Map: \n------------------------\n";
         for (char[] row: map) {
