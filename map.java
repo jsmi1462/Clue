@@ -55,31 +55,44 @@ public class map {
     }
     
     public void addplayers(int nplayers) {
-        //add NPC players
-        
-        
         // add player controlled players with name input
         for (int i = 0; i < nplayers; i ++) {
-             String playername = "default_player_" + i;
-             System.out.println("Enter name for Player " + i + ":");
-             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-             try {
-             playername = input.readLine();
-             } catch (IOException e) {
-                continue;
-             }
-             System.out.println("Player " + i + " is " + playername + "!"); 
-             Player temp = new Player(playername);
-             players.add(temp.clone());
+            String playername = "default_player_" + i;
+            System.out.println("Enter name for Player " + i + ":");
+            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+            try {
+            playername = input.readLine();
+            } catch (IOException e) {
+               continue;
             }
-        for (int i = 0; i < 6 - nplayers; i ++) {
-            Player temp = new NPC();
-            players.add(temp.clone());
+            System.out.println("Player " + i + " is " + playername + "!"); 
+            Player temp = new Player(playername);
+            players.add(temp.cloneName());
         }
 
+        //add NPC
+        ArrayList<String> npcnames = new ArrayList<String>();
+        for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon"}) {
+            npcnames.add(n);
+        }
+
+        for (int i = 0; i < 6 - nplayers; i ++) {
+            String npcname = npcnames.remove((int) Math.random()* (npcnames.size()));
+            NPC temp = new NPC(npcname);
+            System.out.println("NPC " + i + " is " + temp + "!");
+            players.add(temp.cloneName());
+        }
+        linkplayers();
+    }
+
+    public void linkplayers() {
+        for (int i = 0; i < players.size() - 1; i ++) {
+            players.get(i).nextPlayer = players.get(i+ 1);
+        }
         for (int i = 0; i < 6; i++) {
             players.get(i).update();
         }
+        players.get(players.size() - 1).nextPlayer = players.get(0);
     }
 
 
