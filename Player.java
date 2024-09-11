@@ -14,8 +14,9 @@ public class Player {
     public boolean isNPC;
 
     public Player() {
-        
+
     }
+
     public Player(String n) {
         currentRoom = null;
         name = n;
@@ -152,9 +153,9 @@ public class Player {
     }
     
     public class Scorecard {
-        private HashMap<String, String> people;
-        private HashMap<String, String> weapons;
-        private HashMap<String, String> rooms;
+        private HashMap<String, String> people = new HashMap<String, String>();
+        private HashMap<String, String> weapons = new HashMap<String, String>();
+        private HashMap<String, String> rooms = new HashMap<String, String>();
         private ArrayList<Player> players;
         private String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         private String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};

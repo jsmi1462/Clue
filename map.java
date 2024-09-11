@@ -356,4 +356,31 @@ public class map {
         return output;
     }
 
+    private class coordinate {
+        public int x;
+        public int y;
+
+        public coordinate(int thisx, int thisy) {
+            x = thisx;
+            y = thisy;
+        }
+
+        public coordinate(int[] a) {
+            x = a[0];
+            y = a[1];
+        }
+
+        @Override 
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (getClass() != o.getClass()) return false;
+            coordinate o2 = (coordinate) o;
+            return (x == o2.x) && (y == o2.y);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(new int[] {x, y});
+        }
+    }
 }
