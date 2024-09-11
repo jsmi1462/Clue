@@ -7,8 +7,9 @@ public class map {
     public ArrayList<Player> players = new ArrayList<Player>(); // list of players, will need to add some sort of method in map that implements the cll............
     public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
+    public String[] answer = new String[3];
+    public ArrayList<String> cards = new ArrayList<String>();
     public boolean gameover;
-    public ArrayList<String> answer;
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
         //add map
@@ -76,9 +77,6 @@ public class map {
     }
 
     public void addplayers(int nplayers) {
-        //add NPC players
-        
-        
         // add player controlled players with name input
         for (int i = 0; i < nplayers; i ++) {
             String playername = "default_player_" + i;
@@ -94,6 +92,7 @@ public class map {
             players.add(temp.clone());
         }
 
+        //add NPC
         ArrayList<String> npcnames = new ArrayList<String>();
         for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon"}) {
             npcnames.add(n);
@@ -153,10 +152,12 @@ public class map {
     }
 
     public boolean moveplayer(int player) {
+        
         if (players.get(player).isNPC) {
             System.out.println("NPC " + players.get(player) + " is moving!");
             return movenpc(player);
         }
+
         Player play = players.get(player);
         
         boolean valid = false;
@@ -275,6 +276,47 @@ public class map {
         }
         return output;
     }
+
+    //Gant Section Start
+
+    public void dealCards() {
+        String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
+        String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
+        for (int i = 0; i < nplay; i++) {
+            cards.add(players.get(i).name);
+        }
+        for (int i = 0; i < 15; i++) { 
+            if (i < 6) {
+                cards.add(weaponCards[i]);
+            } else {
+                cards.add(roomCards[i]);
+            }
+        }
+        ArrayList<String> temp = new ArrayList<String>();
+        for (int c = 0; c < cards.size(); c++) {
+            temp.add(cards.get(c));
+        }
+        int x = (int) (Math.random() * 6);
+        answer[0] = temp.get(x);
+        temp.remove(x);
+        x = (int) (Math.random() * 11) + 5;
+        answer[1] = temp.get(x);
+        temp.remove(x);
+        x = (int) (Math.random() * 19) + 11;
+        answer[2] = temp.get(x);
+        temp.remove(x);
+        for (int i = 0; i < temp.size(); i++) {
+            x = (int) (Math.random() * temp.size());
+            players.get(i / 3).hand.add(temp.get(x));
+            temp.remove(x);
+        }
+        for (int i = 0; i < 6; i++) {
+            players.get(i).card.update();
+        }
+    }
+
+    //Gant Section End
+
     @Override
     public String toString() {
         String output = "Current Map: \n------------------------\n";
