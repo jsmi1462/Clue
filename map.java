@@ -259,7 +259,11 @@ public class map {
         int[] currcoords = new int[]{x, y};
         Room roomtoenter = doors.get(currcoords);
         p.currentRoom = roomtoenter;
-        p.guess();
+        try {
+            p.guess();
+        } catch (Exception e) {
+            return;
+        }
         return;
     }
 
@@ -268,7 +272,11 @@ public class map {
         Room roomtoenter = doors.get(currcoords);
         System.out.println("Entering room " + roomtoenter.name + ".");
         p.currentRoom = roomtoenter;
-        p.guess();
+        try {
+            p.guess();
+        } catch (Exception e) {
+            return;
+        }
         return;
     }
     public String playerstring() {
