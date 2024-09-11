@@ -2,7 +2,6 @@ import java.util.*;
 
 public class Player {
     public Scanner input = new Scanner(System.in);
-    public int roll;
     public int xPos;
     public int yPos;
     public Room currentRoom;
@@ -12,22 +11,16 @@ public class Player {
     public ArrayList<String> guesses;
     public ArrayList<Player> players;
     public Scorecard card;
+    public boolean isNPC;
 
-    public Player(int xP, int yP, String n, Player next) {
+    public Player(String n) {
         currentRoom = null;
         name = n;
-        nextPlayer = next;
-        roll();
+        isNPC = false;
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
         players = new ArrayList<Player>();
         card = new Scorecard();
-    }
-
-    public void roll() {
-        int rollNum;
-        rollNum = ((int) Math.random() * 5 + 1) + ((int) Math.random() * 5 + 1);
-        roll = rollNum;
     }
 
     public void update() {
@@ -129,6 +122,10 @@ public class Player {
                 }
             }
         }
+    }
+    public Player cloneName() {
+        Player temp = new Player(name);
+        return temp;
     }
 
     public Player clone() { //clones player object
