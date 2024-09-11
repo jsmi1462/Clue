@@ -13,6 +13,9 @@ public class Player {
     public Scorecard card;
     public boolean isNPC;
 
+    public Player() {
+        
+    }
     public Player(String n) {
         currentRoom = null;
         name = n;

@@ -108,7 +108,7 @@ public class NPC extends Player {
     public void findTarget() {
         String[] rooms = {"study", "hall", "lounge", "library", "dining room", "billard room", "kitchen", "ball room"};
         for (String room: rooms) {
-            if (!roomsGuessed.contains(room)) {
+            if (true) { // placeholder
             }
         }
     }
