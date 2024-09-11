@@ -21,7 +21,6 @@ public class Player {
         guesses = new ArrayList<String>();
         players = new ArrayList<Player>();
         card = new Scorecard();
-*/
     }
 
     public void update() {
@@ -128,7 +127,7 @@ public class Player {
         Player temp = new Player(name);
         return temp;
     }
-    
+
     public Player clone() { //clones player object
         Player temp = new Player(name);
         temp.currentRoom = currentRoom;

@@ -109,9 +109,9 @@ public class map {
 
     public void linkplayers() {
         for (int i = 0; i < players.size() - 1; i ++) {
-            players.get(i).nextplayer = players.get(i+ 1);
+            players.get(i).nextPlayer = players.get(i+ 1);
         }
-        players.get(players.size() - 1).nextplayer = players.get(0);
+        players.get(players.size() - 1).nextPlayer = players.get(0);
     }
 
 
@@ -277,7 +277,7 @@ public class map {
         return output;
     }
 
-    //Gant Section Start
+//Gant Section Start
 
     public void dealCards() {
         String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
