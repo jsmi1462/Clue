@@ -129,7 +129,7 @@ public class Player {
     }
 
     public Player clone() { //clones player object
-        Player temp = new Player(xPos, yPos, name, nextPlayer);
+        Player temp = new Player(name);
         temp.currentRoom = currentRoom;
         for (int i = 0; i < 3; i++) {
             temp.hand.add(hand.get(i));
