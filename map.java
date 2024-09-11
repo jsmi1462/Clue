@@ -8,6 +8,7 @@ public class map {
     public int nplay; // there has to be a better way this is stupid
     public String[] answer = new String[3];
     public ArrayList<String> cards = new ArrayList<String>();
+    public boolean gameover;
 
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
@@ -89,10 +90,10 @@ public class map {
         for (int i = 0; i < players.size() - 1; i ++) {
             players.get(i).nextPlayer = players.get(i+ 1);
         }
+        players.get(players.size() - 1).nextPlayer = players.get(0);
         for (int i = 0; i < 6; i++) {
             players.get(i).update();
         }
-        players.get(players.size() - 1).nextPlayer = players.get(0);
     }
 
 
