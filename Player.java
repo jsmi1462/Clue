@@ -9,7 +9,6 @@ public class Player {
     public String name;
     public ArrayList<String> hand;
     public ArrayList<String> guesses;
-    public ArrayList<Player> players;
     public Scorecard card;
     public boolean isNPC;
 
@@ -23,20 +22,18 @@ public class Player {
         isNPC = false;
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
-        players = new ArrayList<Player>();
         card = new Scorecard();
     }
 
     public void update() {
         Player tempNext = nextPlayer;
         for (int i = 0; i < 5; i++) {
-            players.add(tempNext);
             tempNext = tempNext.nextPlayer;
         }
-        players.add(0, tempNext.nextPlayer);
+        card.update();
     }
 
-    public void guess() throws InterruptedException {
+    public void guess() {
         ArrayList<String> tempGuesses = new ArrayList<String>();
         Player tempNext = nextPlayer;
         int firstParse = (int) (Math.random() * 3); //randomizes guesses to compare
@@ -114,6 +111,7 @@ public class Player {
         }
         if (answer) { //prints that no one had the cards you guessed
             System.out.println("Nobody had the cards you guessed...");
+            /* 
             String drama = "That's quite the revelation...";
             char[] chars = drama.toCharArray();
             for (int i = 0; i < chars.length; i++) { //prints out characters every 0.1 seconds for dramatic effect
@@ -125,6 +123,7 @@ public class Player {
                     System.out.print(chars[i]);
                 }
             }
+            */
         }
     }
     public Player cloneName() {
@@ -132,6 +131,7 @@ public class Player {
         return temp;
     }
 
+    @Override
     public Player clone() { //clones player object
         Player temp = new Player(name);
         temp.currentRoom = currentRoom;
@@ -141,9 +141,7 @@ public class Player {
         for (int i = 0; i < guesses.size(); i++) {
             temp.guesses.add(guesses.get(i));
         }
-        for (int i = 0; i < 6; i++) {
-            temp.players.add(players.get(i));
-        }
+        temp.nextPlayer = this.nextPlayer;
         temp.card = card.clone();
         return temp;
     }
@@ -156,7 +154,7 @@ public class Player {
         private HashMap<String, String> people = new HashMap<String, String>();
         private HashMap<String, String> weapons = new HashMap<String, String>();
         private HashMap<String, String> rooms = new HashMap<String, String>();
-        private ArrayList<Player> players;
+        private ArrayList<Player> players = new ArrayList<Player>();
         private String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         private String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
 
@@ -173,7 +171,8 @@ public class Player {
         public void update() { //Called only one time once all players are created in Map
             players = new ArrayList<Player>();
             Player tempPlayer = nextPlayer.clone();
-            people.put(name, " ");
+            people.put(name, " "); // why is this necessarily a " "
+
             for (int p = 0; p < 5; p++) {
                 people.put(tempPlayer.name, " ");
                 players.add(tempPlayer);

@@ -104,14 +104,18 @@ public class map {
             System.out.println("NPC " + i + " is " + temp + "!");
             players.add(temp.cloneName());
         }
+        this.dealCards();
         linkplayers();
+        
     }
 
     public void linkplayers() {
         for (int i = 0; i < players.size() - 1; i ++) {
             players.get(i).nextPlayer = players.get(i+ 1);
         }
+
         players.get(players.size() - 1).nextPlayer = players.get(0);
+        
         for (int i = 0; i < 6; i++) {
             players.get(i).update();
         }
@@ -270,11 +274,7 @@ public class map {
         Room roomtoenter = doors.get(new coordinate(x, y));
         System.out.println("Entering room " + roomtoenter.name + ".");
         p.currentRoom = roomtoenter;
-        try {
-            p.guess();
-        } catch (Exception e) {
-            return;
-        }
+        p.guess();
         return;
     }
     public String playerstring() {
@@ -291,36 +291,29 @@ public class map {
     public void dealCards() {
         String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
-        for (int i = 0; i < nplay; i++) {
+        for (int i = 0; i < 6; i++) {
             cards.add(players.get(i).name);
         }
-        for (int i = 0; i < 15; i++) { 
-            if (i < 6) {
-                cards.add(weaponCards[i]);
-            } else {
-                cards.add(roomCards[i]);
-            }
+        for (String weapon: weaponCards) {
+            cards.add(weapon);
+        }
+        for (String room: roomCards) {
+            cards.add(room);
         }
         ArrayList<String> temp = new ArrayList<String>();
         for (int c = 0; c < cards.size(); c++) {
             temp.add(cards.get(c));
         }
         int x = (int) (Math.random() * 6);
-        answer[0] = temp.get(x);
-        temp.remove(x);
-        x = (int) (Math.random() * 11) + 5;
-        answer[1] = temp.get(x);
-        temp.remove(x);
-        x = (int) (Math.random() * 19) + 11;
-        answer[2] = temp.get(x);
-        temp.remove(x);
+        answer[0] = temp.remove(x);
+        x = (int) (Math.random() * 6) + 5;
+        answer[1] = temp.remove(x);
+        x = (int) (Math.random() * 9) + 11;
+        answer[2] = temp.remove(x);
         for (int i = 0; i < temp.size(); i++) {
             x = (int) (Math.random() * temp.size());
             players.get(i / 3).hand.add(temp.get(x));
             temp.remove(x);
-        }
-        for (int i = 0; i < 6; i++) {
-            players.get(i).card.update();
         }
     }
 
