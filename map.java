@@ -5,7 +5,7 @@ import javax.print.attribute.standard.PrinterMessageFromOperator;
 public class map {
     public char[][] map = new char[25][24]; // hardcoded map
     public ArrayList<Player> players = new ArrayList<Player>(); // list of players, will need to add some sort of method in map that implements the cll............
-    public HashMap<int[], Room> doors = new HashMap<int[], Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
+    public HashMap<coordinate, Room> doors = new HashMap<coordinate, Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
     public String[] answer = new String[3];
     public ArrayList<String> cards = new ArrayList<String>();
@@ -72,7 +72,7 @@ public class map {
         }
         for (int i = 0; i <doorCoors.length; i++)
         {
-            doors.put(doorCoors[i], rooms.get(roomNames[i])); //coordinates and rooms
+            doors.put(new coordinate(doorCoors[i][0], doorCoors[i][1]), rooms.get(roomNames[i])); //coordinates and rooms
         }
     }
 
@@ -256,8 +256,7 @@ public class map {
     }
 
     public void enterRoomNPC(NPC p, int x, int y) {
-        int[] currcoords = new int[]{x, y};
-        Room roomtoenter = doors.get(currcoords);
+        Room roomtoenter = doors.get(new coordinate(x, y));
         p.currentRoom = roomtoenter;
         try {
             p.guess();
@@ -268,8 +267,7 @@ public class map {
     }
 
     public void enterRoom(Player p, int x, int y) {
-        int[] currcoords = new int[]{x, y};
-        Room roomtoenter = doors.get(currcoords);
+        Room roomtoenter = doors.get(new coordinate(x, y));
         System.out.println("Entering room " + roomtoenter.name + ".");
         p.currentRoom = roomtoenter;
         try {
@@ -356,31 +354,18 @@ public class map {
         return output;
     }
 
-    private class coordinate {
-        public int x;
-        public int y;
-
-        public coordinate(int thisx, int thisy) {
-            x = thisx;
-            y = thisy;
-        }
-
-        public coordinate(int[] a) {
-            x = a[0];
-            y = a[1];
-        }
-
+    private record coordinate(int x, int y) {
         @Override 
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (getClass() != o.getClass()) return false;
+            else if (this.getClass() != o.getClass()) return false;
             coordinate o2 = (coordinate) o;
-            return (x == o2.x) && (y == o2.y);
+            return (this.x == o2.x) && (this.y == o2.y);
         }
 
         @Override
         public int hashCode() {
-            return Arrays.hashCode(new int[] {x, y});
+            return 25 * x + y;
         }
     }
 }
