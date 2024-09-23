@@ -104,8 +104,8 @@ public class map {
             System.out.println("NPC " + i + " is " + temp + "!");
             players.add(temp.cloneName());
         }
-        this.dealCards();
         linkplayers();
+        this.dealCards();
         
     }
 
@@ -308,12 +308,16 @@ public class map {
         answer[0] = temp.remove(x);
         x = (int) (Math.random() * 6) + 5;
         answer[1] = temp.remove(x);
-        x = (int) (Math.random() * 9) + 11;
+        x = (int) (Math.random() * 9) + 10;
         answer[2] = temp.remove(x);
         for (int i = 0; i < temp.size(); i++) {
             x = (int) (Math.random() * temp.size());
             players.get(i / 3).hand.add(temp.get(x));
             temp.remove(x);
+        }
+        for (int i = 0; i < 6; i++) {
+            players.get(i).card.update();
+            System.out.println("Player " + i + ": card updated");
         }
     }
 

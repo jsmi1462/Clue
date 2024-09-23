@@ -22,15 +22,18 @@ public class Player {
         isNPC = false;
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
-        card = new Scorecard();
     }
 
     public void update() {
-        Player tempNext = nextPlayer;
+        card = new Scorecard();
+        card.players = new ArrayList<>();
+        Player temp = nextPlayer;
         for (int i = 0; i < 5; i++) {
-            tempNext = tempNext.nextPlayer;
+            card.setPlayers(i, temp);
+            temp = temp.nextPlayer;
         }
-        card.update();
+        card.setPlayers(0, temp);
+//      card.update();
     }
 
     public void guess() {
@@ -134,15 +137,19 @@ public class Player {
     @Override
     public Player clone() { //clones player object
         Player temp = new Player(name);
+/*
         temp.currentRoom = currentRoom;
         for (int i = 0; i < 3; i++) {
             temp.hand.add(hand.get(i));
         }
+*/
         for (int i = 0; i < guesses.size(); i++) {
             temp.guesses.add(guesses.get(i));
         }
         temp.nextPlayer = this.nextPlayer;
-        temp.card = card.clone();
+    //  card = new Scorecard();
+        temp.card = new Scorecard();
+    //  temp.card = card.clone();
         return temp;
     }
 
@@ -169,7 +176,7 @@ public class Player {
         }
 
         public void update() { //Called only one time once all players are created in Map
-            players = new ArrayList<Player>();
+//          players = new ArrayList<Player>();
             Player tempPlayer = nextPlayer.clone();
             people.put(name, " "); // why is this necessarily a " "
 
@@ -200,9 +207,9 @@ public class Player {
         public Scorecard clone() { //clones Scorecard object
             Scorecard temp = new Scorecard();
             for (int i = 0; i < 6; i++) {
+                temp.setPlayers(i, players.get(i));
                 temp.people.put(players.get(i).name, people.get(players.get(i).name));
                 temp.weapons.put(weaponCards[i], weapons.get(weaponCards[i]));
-                temp.setPlayers(players.get(i));
             }
             for (int i = 0; i < 9; i++) {
                 temp.rooms.put(roomCards[i], rooms.get(roomCards[i]));
@@ -239,8 +246,8 @@ public class Player {
             return players;
         }
 
-        public void setPlayers(Player p) {
-            players.add(p);
+        public void setPlayers(int index, Player p) {
+            players.add(index, p);
         }
 
         public String toString() {
