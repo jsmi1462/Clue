@@ -93,6 +93,7 @@ public class map {
         }
 
         //add NPC
+/*
         ArrayList<String> npcnames = new ArrayList<String>();
         for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon"}) {
             npcnames.add(n);
@@ -104,6 +105,7 @@ public class map {
             System.out.println("NPC " + i + " is " + temp + "!");
             players.add(temp.cloneName());
         }
+*/
         linkplayers();
         this.dealCards();
         
