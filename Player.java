@@ -175,6 +175,28 @@ public class Player {
             }
         }
 
+        public boolean checkCard(int playerNum, String hash, String s) {
+            if (hash.equalsIgnoreCase("People")) {
+                if (players.get(playerNum).card.getPeople().get(s).equals("X")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (hash.equalsIgnoreCase("Weapon")) {
+                if (players.get(playerNum).card.getWeapons().get(s).equals("X")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                if (players.get(playerNum).card.getRooms().get(s).equals("X")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
         public void update() { //Called only one time once all players are created in Map
 //          players = new ArrayList<Player>();
             Player tempPlayer = nextPlayer.clone();
@@ -190,6 +212,9 @@ public class Player {
             for (int i = 0; i < 3; i++) {
                 room = true;
                 for (int j = 0; j < 6; j++) {
+                    System.out.println("i: " + i + " j: " + j);
+                    System.out.println(hand.get(i));
+                    System.out.println(players.get(j).name);
                     if (hand.get(i).equals(players.get(j).name)) {
                         people.put(players.get(j).name, "X");
                         room = false;
