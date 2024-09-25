@@ -21,23 +21,23 @@ public class NPC extends Player {
         isNPC = true;
     }
 
-    public void findPath() {
-        ArrayList<int[]> targetCoords = new ArrayList<int[]>();
-        for (Map.Entry<int[], Room> entry : currMap.doors.entrySet()) {
-            if (entry.getValue() == currTarget) {
+    public int findPath(int moves, Room room) {
+        ArrayList<map.coordinate> targetCoords = new ArrayList<>();
+        for (Map.Entry<map.coordinate, Room> entry : currMap.doors.entrySet()) {
+            if (entry.getValue() == room) {
                 targetCoords.add(entry.getKey());
             }
         }
         int minmoves = 500;
         int[] mincoords = new int[2];
-        for (int[] targetCoord: targetCoords) {
-            int targetx = targetCoord[0];
-            int targety = targetCoord[1];
+        for (map.coordinate targetCoord: targetCoords) {
+            int targetx = targetCoord.x();
+            int targety = targetCoord.y();
             ArrayList<int[]> forbfs = new ArrayList<int[]>(); // argh
             String path = BFS(0, "", targetx, targety, xPos, yPos, forbfs);
             if (path.length() < minmoves) {
                 minmoves = path.length();
-                mincoords = targetCoord;
+                mincoords = new int[] {targetCoord.x(), targetCoord.y()};
             }
         }
         ArrayList<int[]> forbfs = new ArrayList<int[]>(); // argh
@@ -45,9 +45,48 @@ public class NPC extends Player {
         for (int i = 0; i < bestpath.length(); i++) {
             currPath.add(bestpath.charAt(i));
         }
-        return;
+        return currPath.size();
+    }
+    public void pathfindMain(int moves) {
+        int bestvalue = calcRoomValue(moves, currMap.rooms.get(0));
+        int infinity = 1000000;
+        Room bestroom = currMap.rooms.get(0);
+        for (Room room: currMap.rooms) {
+            int thisvalue = calcRoomValue(moves, room);
+            if (thisvalue > bestvalue) {
+                bestvalue = thisvalue;
+                bestroom = room;
+            }
+        }
+        currTarget = bestroom;
+        findPath(moves, bestroom);
+    }
+    public int calcRoomValue(int moves, Room room) {
+        int thisvalue = 0;
+        int distance = findPath(moves, room) - moves;
+        distance = (int) (distance + 6) / 7;
+        thisvalue -= (distance * 3);
+        // if room unknown, done
+        // if room = yours, 100 if ans, -inf/2 if no ans
+        // if room = next in line, -infty, etc.
+        return thisvalue;
     }
 
+    public String findBestWeapon() {
+        return "";// placeholder
+
+    }
+
+    public String findBestPerson() {
+        return ""; // placeholder
+
+    }
+
+    @Override
+    public void guess() {
+          Room guessedRoom = currTarget;
+           
+    }
     public String BFS(Integer length, String pathsofar, int targetx, int targety, int currx, int curry, ArrayList<int[]> visited) {
         Queue<Triplet<Integer, String, int[]>> q = new LinkedList<Triplet<Integer, String, int[]>>(); // hate me for this if you want, i can't find another way without changing too many map methods........
         q.add(new Triplet<Integer, String, int[]>(length, pathsofar, new int[]{currx, curry})); // BFS queue keeping track of path and integer
@@ -105,13 +144,7 @@ public class NPC extends Player {
         }
         return false;
     }
-    public void findTarget() {
-        String[] rooms = {"study", "hall", "lounge", "library", "dining room", "billard room", "kitchen", "ball room"};
-        for (String room: rooms) {
-            if (true) { // placeholder
-            }
-        }
-    }
+    
     @Override
     public NPC clone() {
         NPC n = new NPC(this.name);
