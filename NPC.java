@@ -14,11 +14,17 @@ public class NPC extends Player {
     public Room currTarget;
     public ArrayList<Character> currPath;
     public boolean isNPC; 
+    public Scorecard card;
+    public String answerroom;
+    public String answerplayer;
+    public String answerweapon;
 
     public NPC (String n) {
         currentRoom = null;
         name = n;
         isNPC = true;
+        hand = new ArrayList<String>();
+        guesses = new ArrayList<String>();
     }
 
     public int findPath(int moves, Room room) {
@@ -49,7 +55,7 @@ public class NPC extends Player {
     }
     public void pathfindMain(int moves) {
         int bestvalue = calcRoomValue(moves, currMap.rooms.get(0));
-        int infinity = 1000000;
+        
         Room bestroom = currMap.rooms.get(0);
         for (Room room: currMap.rooms) {
             int thisvalue = calcRoomValue(moves, room);
@@ -64,27 +70,93 @@ public class NPC extends Player {
     public int calcRoomValue(int moves, Room room) {
         int thisvalue = 0;
         int distance = findPath(moves, room) - moves;
+        int infinity = 1000000;
         distance = (int) (distance + 6) / 7;
         thisvalue -= (distance * 3);
-        // if room unknown, done
-        // if room = yours, 100 if ans, -inf/2 if no ans
-        // if room = next in line, -infty, etc.
-        return thisvalue;
+
+        if (answerroom.equalsIgnoreCase(room.toString())) return thisvalue;
+
+        switch(card.checkCard("Room", room.toString())) {
+            case (0 - 1): 
+                return thisvalue;
+            case 0:
+                if (answerroom != null) return thisvalue + 100;
+                return thisvalue - (infinity) / 2;
+            case 1: 
+                return thisvalue - infinity;
+        }
+        return (0 - 4 + card.checkCard("Room", room.toString()));
     }
 
-    public String findBestWeapon() {
-        return "";// placeholder
+    public String findbestweapon() {
+        double bestvalue = calcweaponvalue("Candlestick");
+        String bestweapon = "Candlestick";
+        for (String weapon: new String[]{"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"}) {
+            double thisvalue = calcweaponvalue(weapon);
+            if (thisvalue > bestvalue) {
+                bestvalue = thisvalue;
+                bestweapon = weapon;
+            }
+
+        }
+        return bestweapon;
 
     }
 
-    public String findBestPerson() {
-        return ""; // placeholder
+    public double calcweaponvalue (String weapon) 
+        {
+            int negativeInf= -1000000;
+            int b = 4;
+            int c = 1;
+            switch (card.checkCard("Weapon", weapon)) {
+                case(0):
+                    if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
+                    return (-0.1);
+                case (1):
+                    return negativeInf;
+            }
+            return (card.checkCard("Weapon", weapon) -2) * c - b;
+        } 
+
+    public String findbestperson() {
+        ArrayList<String> names = new ArrayList<>();
+
+        for (Player p: currMap.players) {
+            names.add(p.name);
+        }
+
+        double bestvalue = calcpersonvalue(names.get(0));
+        String bestname = names.get(0);
+        for (String name: names) {
+            double thisvalue = calcpersonvalue(name);
+            if (thisvalue > bestvalue) {
+                bestvalue = thisvalue;
+                bestname = name;
+            }
+
+        }
+        return bestname;
 
     }
+
+    public double calcpersonvalue (String person) 
+        {
+            int negativeInf= -1000000;
+            int b = 4;
+            int c = 1;
+            switch (card.checkCard("Weapon", person)) {
+                case(0):
+                    if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
+                    return (-0.1);
+                case (1):
+                    return negativeInf;
+            }
+            return (card.checkCard("Weapon", person) -2) * c - b;
+        } 
 
     @Override
     public void guess() {
-          Room guessedRoom = currTarget;
+          Room guessedRoom = currTarget; // note to self - wtf is this
            
     }
     public String BFS(Integer length, String pathsofar, int targetx, int targety, int currx, int curry, ArrayList<int[]> visited) {

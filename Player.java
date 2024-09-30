@@ -173,8 +173,13 @@ public class Player {
                 rooms.put(roomCards[r], " ");
             }
         }
-
-        public boolean checkCard(int playerNum, String hash, String s) {
+        public int checkCard(String hash, String s) {
+            for (int i =0; i < 6; i ++) {
+                if (checkCardSpecific(i, hash, s)) return i;
+            }
+            return -1; //placeholder
+        }
+        public boolean checkCardSpecific(int playerNum, String hash, String s) {
             if (hash.equalsIgnoreCase("People")) {
                 if (players.get(playerNum).card.getPeople().get(s).equals("X")) {
                     return true;
@@ -211,7 +216,7 @@ public class Player {
             for (int i = 0; i < 3; i++) {
                 room = true;
                 for (int j = 0; j < 6; j++) {
-                    System.out.println("i: " + i + " j: " + j);
+                    // System.out.println("i: " + i + " j: " + j);
                     System.out.println(hand.get(i));
                     System.out.println(players.get(j).name);
                     if (hand.get(i).equals(players.get(j).name)) {
