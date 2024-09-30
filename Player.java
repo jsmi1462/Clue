@@ -13,7 +13,6 @@ public class Player {
     public boolean isNPC;
 
     public Player() {
-
     }
 
     public Player(String n) {
