@@ -21,15 +21,18 @@ public class Player {
         isNPC = false;
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
-        card = new Scorecard();
     }
 
     public void update() {
-        Player tempNext = nextPlayer;
+        card = new Scorecard();
+        card.players = new ArrayList<>();
+        Player temp = nextPlayer;
         for (int i = 0; i < 5; i++) {
-            tempNext = tempNext.nextPlayer;
+            card.setPlayers(i, temp);
+            temp = temp.nextPlayer;
         }
-        card.update();
+        card.setPlayers(0, temp);
+//      card.update();
     }
 
     public void guess() {
@@ -133,15 +136,19 @@ public class Player {
     @Override
     public Player clone() { //clones player object
         Player temp = new Player(name);
+/*
         temp.currentRoom = currentRoom;
         for (int i = 0; i < 3; i++) {
             temp.hand.add(hand.get(i));
         }
+*/
         for (int i = 0; i < guesses.size(); i++) {
             temp.guesses.add(guesses.get(i));
         }
         temp.nextPlayer = this.nextPlayer;
-        temp.card = card.clone();
+    //  card = new Scorecard();
+        temp.card = new Scorecard();
+    //  temp.card = card.clone();
         return temp;
     }
 
@@ -167,8 +174,30 @@ public class Player {
             }
         }
 
+        public boolean checkCard(int playerNum, String hash, String s) {
+            if (hash.equalsIgnoreCase("People")) {
+                if (players.get(playerNum).card.getPeople().get(s).equals("X")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (hash.equalsIgnoreCase("Weapon")) {
+                if (players.get(playerNum).card.getWeapons().get(s).equals("X")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                if (players.get(playerNum).card.getRooms().get(s).equals("X")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
         public void update() { //Called only one time once all players are created in Map
-            players = new ArrayList<Player>();
+//          players = new ArrayList<Player>();
             Player tempPlayer = nextPlayer.clone();
             people.put(name, " "); // why is this necessarily a " "
 
@@ -182,6 +211,9 @@ public class Player {
             for (int i = 0; i < 3; i++) {
                 room = true;
                 for (int j = 0; j < 6; j++) {
+                    System.out.println("i: " + i + " j: " + j);
+                    System.out.println(hand.get(i));
+                    System.out.println(players.get(j).name);
                     if (hand.get(i).equals(players.get(j).name)) {
                         people.put(players.get(j).name, "X");
                         room = false;
@@ -199,9 +231,9 @@ public class Player {
         public Scorecard clone() { //clones Scorecard object
             Scorecard temp = new Scorecard();
             for (int i = 0; i < 6; i++) {
+                temp.setPlayers(i, players.get(i));
                 temp.people.put(players.get(i).name, people.get(players.get(i).name));
                 temp.weapons.put(weaponCards[i], weapons.get(weaponCards[i]));
-                temp.setPlayers(players.get(i));
             }
             for (int i = 0; i < 9; i++) {
                 temp.rooms.put(roomCards[i], rooms.get(roomCards[i]));
@@ -238,8 +270,8 @@ public class Player {
             return players;
         }
 
-        public void setPlayers(Player p) {
-            players.add(p);
+        public void setPlayers(int index, Player p) {
+            players.add(index, p);
         }
 
         public String toString() {
