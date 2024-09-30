@@ -97,7 +97,7 @@ public class map {
 
         //add NPC
         ArrayList<String> npcnames = new ArrayList<String>();
-        for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon"}) {
+        for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon", "Bobby Kaufman", "Doc"}) {
             npcnames.add(n);
         }
 
