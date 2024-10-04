@@ -175,12 +175,16 @@ public class NPC extends Player {
                     switch (direction) {
                         case ('w'):
                             q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0] - 1, curr.c[1]}));
+                            break;
                         case ('a'):
                             q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0], curr.c[1] - 1}));
+                            break;
                         case ('s'):
                             q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0] + 1, curr.c[1]}));
+                            break;
                         case ('d'):
                             q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0], curr.c[1] + 1}));
+                            break;
                     }
                 }
             } 

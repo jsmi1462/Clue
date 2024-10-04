@@ -92,7 +92,7 @@ public class map {
             }
             System.out.println("Player " + i + " is " + playername + "!"); 
             Player temp = new Player(playername);
-            players.add(temp.cloneName());
+            players.add(temp.clone());
         }
 
         //add NPC
@@ -106,7 +106,7 @@ public class map {
             String npcname = npcnames.remove((int) Math.random()* (npcnames.size()));
             NPC temp = new NPC(npcname);
             System.out.println("NPC " + i + " is " + temp + "!");
-            players.add(temp.cloneName());
+            players.add(temp.clone());
         }
 
         linkplayers();
