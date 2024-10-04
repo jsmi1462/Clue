@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-import javax.print.attribute.standard.PrinterMessageFromOperator;
+
 
 public class map {
     public char[][] map = new char[25][24]; // hardcoded map
@@ -9,13 +9,13 @@ public class map {
     public int nplay; // there has to be a better way this is stupid
     public String[] answer = new String[3];
     public ArrayList<String> cards = new ArrayList<String>();
-    public boolean gameover;
+    public boolean gameOver;
     public ArrayList<Room> rooms = new ArrayList<>();
     
     public map (int nplayers) { // constructor builds the map and adds the players to the map after input
         //add map
         assignDoorCoors();
-        gameover = false;
+        gameOver = false;
         this.nplay = nplayers;
         this.addrow("xxxxxxx xxxxxxxx xxxxxxx", 0);
         this.addrow("x     x  x    x  x     x", 1);
@@ -62,10 +62,10 @@ public class map {
     
     public void assignDoorCoors() {
         HashMap<String, Room> rooms2 = new HashMap<String, Room>();
-        String[] uniqueRoomNames = {"study", "hall", "lounge", "library", "dining room", "billard room",
-        "ball room", "kitchen", "conservatory"};
-        String[] roomNames = {"study", "hall", "lounge", "hall", "hall", "library", "dining room", "library", "billard room", "billard room",
-            "ball room", "ball room", "kitchen", "ball room", "ball room"};
+        String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billard Room",
+        "Ball Room", "Kitchen", "Conservatory"};
+        String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billard Room", "Billard Room",
+            "Ball Room", "Ball Room", "Kitchen", "Ball Room", "Ball Room"};
         int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,8},{19,15}};
         for (int i = 0; i < uniqueRoomNames.length; i++)
         {
@@ -83,7 +83,7 @@ public class map {
         // add player controlled players with name input
         for (int i = 0; i < nplayers; i ++) {
             String playername = "default_player_" + i;
-            System.out.println("Enter name for Player " + i + ":");
+            System.out.print("Enter name for Player " + i + " (Max 13 Characters): ");
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
             try {
             playername = input.readLine();
@@ -91,12 +91,12 @@ public class map {
                continue;
             }
             System.out.println("Player " + i + " is " + playername + "!"); 
-            Player temp = new Player(playername);
+            Player temp = new Player(playername, this);
             players.add(temp.cloneName());
         }
 
         //add NPC
-/*
+
         ArrayList<String> npcnames = new ArrayList<String>();
         for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon", "Bobby Kaufman", "Doc"}) {
             npcnames.add(n);
@@ -104,11 +104,11 @@ public class map {
 
         for (int i = 0; i < 6 - nplayers; i ++) {
             String npcname = npcnames.remove((int) Math.random()* (npcnames.size()));
-            NPC temp = new NPC(npcname);
+            NPC temp = new NPC(npcname, this);
             System.out.println("NPC " + i + " is " + temp + "!");
             players.add(temp.cloneName());
         }
-*/
+
         linkplayers();
         this.dealCards();
         
@@ -242,8 +242,9 @@ public class map {
                     }
                 }
             }
-            if (map[play.xPos][play.yPos] != 'd') {
-                return false;
+            if (map[play.xPos][play.yPos] == 'd') {
+                this.enterRoom(play, play.xPos, play.yPos);
+                break;
             }
         }
         return true;
@@ -290,7 +291,27 @@ public class map {
         Room roomtoenter = doors.get(new coordinate(x, y));
         System.out.println("Entering room " + roomtoenter.name + ".");
         p.currentRoom = roomtoenter;
-        p.guess();
+        System.out.print("Would you like to make a final guess? (If you are incorrect, you will lose the game)\r\n" + "Yes or No: ");
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        String fin = "";
+        do {
+            try {
+                fin = input.readLine();
+                if (fin.equalsIgnoreCase("Yes")) {
+                    if (p.finalGuess()) {
+                        gameOver = true;
+                    } else {
+                        this.lose(p);
+                    }
+                } else {
+                    p.guess();
+                }
+                break;
+            } catch (IOException e) {
+                System.out.println("Invalid Input: Please try again.");
+                continue;   
+            }
+        } while (true);
         return;
     }
     public String playerstring() {
@@ -310,10 +331,10 @@ public class map {
         for (int i = 0; i < 6; i++) {
             cards.add(players.get(i).name);
         }
-        for (String weapon: weaponCards) {
+        for (String weapon : weaponCards) {
             cards.add(weapon);
         }
-        for (String room: roomCards) {
+        for (String room : roomCards) {
             cards.add(room);
         }
         ArrayList<String> temp = new ArrayList<String>();
@@ -326,15 +347,27 @@ public class map {
         answer[1] = temp.remove(x);
         x = (int) (Math.random() * 9) + 10;
         answer[2] = temp.remove(x);
-        for (int i = 0; i < temp.size(); i++) {
-            x = (int) (Math.random() * temp.size());
-            players.get(i / 3).hand.add(temp.get(x));
-            temp.remove(x);
+        for (int i = 0; i < 6; i++) {
+            for (int u = 0; u < 3; u++) {
+                x = (int) (Math.random() * temp.size());
+                players.get(i).hand.add(temp.get(x));
+                temp.remove(x);
+            }
         }
         for (int i = 0; i < 6; i++) {
             players.get(i).card.update();
             System.out.println("Player " + i + ": card updated");
         }
+    }
+
+    public void win(Player p) {
+        System.out.println(p.name + " has correctly guessed the murderer, weapon, and room!\r\n"
+            + "This is the information that " + p.name + " had collected to deduce the answer:\r\n" + p.card);
+    }
+
+    public void lose(Player p) {
+        System.out.println(p.name + " has guessed incorrectly and is out of the game...");
+        players.remove(p);
     }
 
 //Gant Section End

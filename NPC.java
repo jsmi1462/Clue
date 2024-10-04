@@ -13,12 +13,19 @@ public class NPC extends Player {
     public map currMap;
     public Room currTarget;
     public ArrayList<Character> currPath;
-    public boolean isNPC; 
+    public boolean isNPC;
+    public map map;
 
-    public NPC (String n) {
+    public NPC (String n, map m) {
         currentRoom = null;
         name = n;
+        map = m;
         isNPC = true;
+    }
+
+    public NPC cloneName(String s) {
+        NPC temp = new NPC(s);
+        return temp;
     }
 
     public int findPath(int moves, Room room) {
