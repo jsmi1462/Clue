@@ -5,6 +5,7 @@ import java.io.*;
 public class map {
     public char[][] map = new char[25][24]; // hardcoded map
     public ArrayList<Player> players = new ArrayList<Player>(); // list of players, will need to add some sort of method in map that implements the cll............
+    public ArrayList<Player> playersingame = new ArrayList<Player>();
     public HashMap<coordinate, Room> doors = new HashMap<coordinate, Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
     public String[] answer = new String[3];
@@ -18,28 +19,28 @@ public class map {
         gameOver = false;
         this.nplay = nplayers;
         this.addrow("xxxxxxx xxxxxxxx xxxxxxx", 0);
-        this.addrow("x     x  x    x  x     x", 1);
-        this.addrow("x     x  x    x  x     x", 2);
-        this.addrow("xxxxxxd  x    x  x     x", 3);
+        this.addrow("xSTUDYx  x    x  x     x", 1);
+        this.addrow("x     x  xHALLx  x LOU x", 2);
+        this.addrow("xxxxxxd  x    x  x NGE x", 3);
         this.addrow("x        d    x  x     x", 4);
         this.addrow("         x    x  dxxxxxx", 5);
         this.addrow("xxxxxx   xxddxx        x", 6);
-        this.addrow("x     x", 7);
-        this.addrow("x     d  xxxxx         x", 8);
-        this.addrow("x     x  xxxxx  xdxxxxxx", 9);
-        this.addrow("xxxdxx   xxxxx  x      x", 10);
-        this.addrow("x        xxxxx  x      x", 11);
-        this.addrow("xdxxxx   xxxxx  d      x", 12);
-        this.addrow("x    x   xxxxx  x      x", 13);
-        this.addrow("x    x   xxxxx  xxx     ", 14);
-        this.addrow("x    d             xxxxx", 15);
+        this.addrow("x LIB x", 7);
+        this.addrow("x RA  d  xxxxx         x", 8);
+        this.addrow("x RY  x  xxxxx  xdxxxxxx", 9);
+        this.addrow("xxxdxx   xxxxx  x  DIN x", 10);
+        this.addrow("x        xxxxx  x  ING x", 11);
+        this.addrow("xdxxxx   xxxxx  d ROOM x", 12);
+        this.addrow("xBILLx   xxxxx  x      x", 13);
+        this.addrow("xIARDx   xxxxx  xxx     ", 14);
+        this.addrow("xROOMd             xxxxx", 15);
         this.addrow("xxxxxx                 x", 16);
         this.addrow("x       xdxxxxdx", 17);
-        this.addrow("        x      x  xdxxxx", 18);
-        this.addrow("xxxxx   d      d  x    x", 19);
-        this.addrow("x    x  x      x  x    x", 20);
-        this.addrow("x    x  x      x  x    x", 21);
-        this.addrow("x    x  xx    xx  x    x", 22);
+        this.addrow("        x BALL x  xdxxxx", 18);
+        this.addrow("xxxxx   d ROOM d  xKITCx", 19);
+        this.addrow("xCONSx  x      x  x HENx", 20);
+        this.addrow("xERVAx  x      x  x    x", 21);
+        this.addrow("xTORYx  xx    xx  x    x", 22);
         this.addrow("xxxxxxx   xxxx   xxxxxxx", 23);
         this.addrow("xxxxxxxxx xxxx xxxxxxxxx", 24);
         this.addplayers(nplayers);
@@ -56,6 +57,7 @@ public class map {
             players.get(i).yPos = pos[1];
         }
         System.out.println(this); // Jack - map string is wrong 
+        playersingame = players;
 
         
     }
@@ -167,11 +169,14 @@ public class map {
 
     public boolean moveplayer(int player, int roll) {
         
+        
         if (players.get(player).isNPC) {
             System.out.println("NPC " + players.get(player) + " is moving!");
             System.out.println(this);
             return movenpc(player, roll);
         }
+        System.out.println("Your current card:");
+        System.out.println(players.get(player).card);
         for (int i = roll; i > 0; i--) {
             System.out.println("Player " + player + " (" + players.get(player) + ") is playing with " + i + " moves remaining this turn!");
             System.out.println(this);
@@ -301,6 +306,7 @@ public class map {
             try {
                 fin = input.readLine();
                 if (fin.equalsIgnoreCase("Yes")) {
+                    System.out.println(p.card);
                     if (p.finalGuess()) {
                         gameOver = true;
                         break;
@@ -372,7 +378,14 @@ public class map {
 
     public void lose(Player p) {
         System.out.println(p.name + " has guessed incorrectly and is out of the game...");
-        players.remove(p);
+        playersingame.remove(p);
+    }
+
+    public void coverscreen() {
+        for (int i = 0; i < 50; i ++) {
+            System.out.println();
+        }
+        return;
     }
 
 //Gant Section End
@@ -404,7 +417,7 @@ public class map {
         output += "------------------------\n";
         return output;
     }
-
+    
     public record coordinate(int x, int y) {
 
         @Override 

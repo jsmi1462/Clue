@@ -8,7 +8,7 @@ public class Clue {
         map gameMap = new map(6);
         int winner = 0;
         while (gameMap.gameOver == false) {
-            for (int i = 0; i < gameMap.players.size(); i ++) {
+            for (int i = 0; i < gameMap.playersingame.size(); i ++) {
                 int roll = 1 + (int) (Math.random() * 6);
                 int roll2 = 1 + (int) (Math.random() * 6);
                 int roll3 = roll + roll2;
