@@ -202,6 +202,7 @@ public class map {
                                 System.out.println("You moved up.");
                                 players.get(player).xPos--;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -213,6 +214,7 @@ public class map {
                                 System.out.println("You moved left.");
                                 players.get(player).yPos--;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -224,6 +226,7 @@ public class map {
                                 System.out.println("You moved down.");
                                 players.get(player).xPos++;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -235,6 +238,7 @@ public class map {
                                 System.out.println("You moved right.");
                                 players.get(player).yPos++;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -259,7 +263,6 @@ public class map {
             System.out.println("You cannot move into walls.");
             return true;
         } else if (map[x][y] == 'd') {
-            enterRoom(p, x, y);
             return false;
         }
         return false;
@@ -294,24 +297,26 @@ public class map {
         System.out.print("Would you like to make a final guess? (If you are incorrect, you will lose the game)\r\n" + "Yes or No: ");
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         String fin = "";
-        do {
+        while (true) {
             try {
                 fin = input.readLine();
                 if (fin.equalsIgnoreCase("Yes")) {
                     if (p.finalGuess()) {
                         gameOver = true;
+                        break;
                     } else {
                         this.lose(p);
+                        break;
                     }
                 } else {
                     p.guess();
+                    break;
                 }
-                break;
             } catch (IOException e) {
                 System.out.println("Invalid Input: Please try again.");
                 continue;   
             }
-        } while (true);
+        } 
         return;
     }
     public String playerstring() {
