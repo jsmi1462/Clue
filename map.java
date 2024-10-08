@@ -5,6 +5,7 @@ import java.io.*;
 public class map {
     public char[][] map = new char[25][24]; // hardcoded map
     public ArrayList<Player> players = new ArrayList<Player>(); // list of players, will need to add some sort of method in map that implements the cll............
+    public ArrayList<Player> playersingame = new ArrayList<Player>();
     public HashMap<coordinate, Room> doors = new HashMap<coordinate, Room>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
     public String[] answer = new String[3];
@@ -18,28 +19,28 @@ public class map {
         gameOver = false;
         this.nplay = nplayers;
         this.addrow("xxxxxxx xxxxxxxx xxxxxxx", 0);
-        this.addrow("x     x  x    x  x     x", 1);
-        this.addrow("x     x  x    x  x     x", 2);
-        this.addrow("xxxxxxd  x    x  x     x", 3);
+        this.addrow("xSTUDYx  x    x  x     x", 1);
+        this.addrow("x     x  xHALLx  x LOU x", 2);
+        this.addrow("xxxxxxd  x    x  x NGE x", 3);
         this.addrow("x        d    x  x     x", 4);
         this.addrow("         x    x  dxxxxxx", 5);
         this.addrow("xxxxxx   xxddxx        x", 6);
-        this.addrow("x     x", 7);
-        this.addrow("x     d  xxxxx         x", 8);
-        this.addrow("x     x  xxxxx  xdxxxxxx", 9);
-        this.addrow("xxxdxx   xxxxx  x      x", 10);
-        this.addrow("x        xxxxx  x      x", 11);
-        this.addrow("xdxxxx   xxxxx  d      x", 12);
-        this.addrow("x    x   xxxxx  x      x", 13);
-        this.addrow("x    x   xxxxx  xxx     ", 14);
-        this.addrow("x    d             xxxxx", 15);
+        this.addrow("x LIB x", 7);
+        this.addrow("x RA  d  xxxxx         x", 8);
+        this.addrow("x RY  x  xxxxx  xdxxxxxx", 9);
+        this.addrow("xxxdxx   xxxxx  x  DIN x", 10);
+        this.addrow("x        xxxxx  x  ING x", 11);
+        this.addrow("xdxxxx   xxxxx  d ROOM x", 12);
+        this.addrow("xBILLx   xxxxx  x      x", 13);
+        this.addrow("xIARDx   xxxxx  xxx     ", 14);
+        this.addrow("xROOMd             xxxxx", 15);
         this.addrow("xxxxxx                 x", 16);
         this.addrow("x       xdxxxxdx", 17);
-        this.addrow("        x      x  xdxxxx", 18);
-        this.addrow("xxxxx   d      d  x    x", 19);
-        this.addrow("x    x  x      x  x    x", 20);
-        this.addrow("x    x  x      x  x    x", 21);
-        this.addrow("x    x  xx    xx  x    x", 22);
+        this.addrow("        x BALL x  xdxxxx", 18);
+        this.addrow("xxxxd   d ROOM d  xKITCx", 19);
+        this.addrow("xCONSx  x      x  x HENx", 20);
+        this.addrow("xERVAx  x      x  x    x", 21);
+        this.addrow("xTORYx  xx    xx  x    x", 22);
         this.addrow("xxxxxxx   xxxx   xxxxxxx", 23);
         this.addrow("xxxxxxxxx xxxx xxxxxxxxx", 24);
         this.addplayers(nplayers);
@@ -56,6 +57,7 @@ public class map {
             players.get(i).yPos = pos[1];
         }
         System.out.println(this); // Jack - map string is wrong 
+        playersingame = players;
 
         
     }
@@ -65,8 +67,8 @@ public class map {
         String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billard Room",
         "Ball Room", "Kitchen", "Conservatory"};
         String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billard Room", "Billard Room",
-            "Ball Room", "Ball Room", "Kitchen", "Ball Room", "Ball Room"};
-        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,8},{19,15}};
+            "Ball Room", "Ball Room", "Kitchen", "Conservatory", "Ball Room", "Ball Room"};
+        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,4}, {19,8},{19,15}};
         for (int i = 0; i < uniqueRoomNames.length; i++)
         {
             Room temproom = new Room(uniqueRoomNames[i]);
@@ -167,11 +169,14 @@ public class map {
 
     public boolean moveplayer(int player, int roll) {
         
+        
         if (players.get(player).isNPC) {
             System.out.println("NPC " + players.get(player) + " is moving!");
             System.out.println(this);
             return movenpc(player, roll);
         }
+        System.out.println("Your current card:");
+        System.out.println(players.get(player).card);
         for (int i = roll; i > 0; i--) {
             System.out.println("Player " + player + " (" + players.get(player) + ") is playing with " + i + " moves remaining this turn!");
             System.out.println(this);
@@ -202,6 +207,7 @@ public class map {
                                 System.out.println("You moved up.");
                                 players.get(player).xPos--;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -213,6 +219,7 @@ public class map {
                                 System.out.println("You moved left.");
                                 players.get(player).yPos--;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -224,6 +231,7 @@ public class map {
                                 System.out.println("You moved down.");
                                 players.get(player).xPos++;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -235,6 +243,7 @@ public class map {
                                 System.out.println("You moved right.");
                                 players.get(player).yPos++;
                                 valid = true;
+                                break;
                             }
                             else System.out.println("Move invalid.");
                         }
@@ -243,7 +252,9 @@ public class map {
                 }
             }
             if (map[play.xPos][play.yPos] == 'd') {
-                this.enterRoom(play, play.xPos, play.yPos);
+                if (!this.enterRoom(play, play.xPos, play.yPos)) {
+                    return false;
+                };
                 break;
             }
         }
@@ -259,7 +270,6 @@ public class map {
             System.out.println("You cannot move into walls.");
             return true;
         } else if (map[x][y] == 'd') {
-            enterRoom(p, x, y);
             return false;
         }
         return false;
@@ -287,32 +297,35 @@ public class map {
         return;
     }
 
-    public void enterRoom(Player p, int x, int y) {
+    public boolean enterRoom(Player p, int x, int y) {
         Room roomtoenter = doors.get(new coordinate(x, y));
         System.out.println("Entering room " + roomtoenter.name + ".");
         p.currentRoom = roomtoenter;
         System.out.print("Would you like to make a final guess? (If you are incorrect, you will lose the game)\r\n" + "Yes or No: ");
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         String fin = "";
-        do {
+        while (true) {
             try {
                 fin = input.readLine();
                 if (fin.equalsIgnoreCase("Yes")) {
+                    System.out.println(p.card);
                     if (p.finalGuess()) {
                         gameOver = true;
+                        break;
                     } else {
                         this.lose(p);
+                        return false;
                     }
                 } else {
                     p.guess();
+                    break;
                 }
-                break;
             } catch (IOException e) {
                 System.out.println("Invalid Input: Please try again.");
                 continue;   
             }
-        } while (true);
-        return;
+        } 
+        return true;
     }
     public String playerstring() {
         String output = "Number of NPCs: " + (6 - nplay);
@@ -367,7 +380,14 @@ public class map {
 
     public void lose(Player p) {
         System.out.println(p.name + " has guessed incorrectly and is out of the game...");
-        players.remove(p);
+        playersingame.remove(p);
+    }
+
+    public void coverscreen() {
+        for (int i = 0; i < 50; i ++) {
+            System.out.println();
+        }
+        return;
     }
 
 //Gant Section End
@@ -399,7 +419,7 @@ public class map {
         output += "------------------------\n";
         return output;
     }
-
+    
     public record coordinate(int x, int y) {
 
         @Override 
