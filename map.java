@@ -37,7 +37,7 @@ public class map {
         this.addrow("xxxxxx                 x", 16);
         this.addrow("x       xdxxxxdx", 17);
         this.addrow("        x BALL x  xdxxxx", 18);
-        this.addrow("xxxxx   d ROOM d  xKITCx", 19);
+        this.addrow("xxxxd   d ROOM d  xKITCx", 19);
         this.addrow("xCONSx  x      x  x HENx", 20);
         this.addrow("xERVAx  x      x  x    x", 21);
         this.addrow("xTORYx  xx    xx  x    x", 22);
@@ -67,8 +67,8 @@ public class map {
         String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billard Room",
         "Ball Room", "Kitchen", "Conservatory"};
         String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billard Room", "Billard Room",
-            "Ball Room", "Ball Room", "Kitchen", "Ball Room", "Ball Room"};
-        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,8},{19,15}};
+            "Ball Room", "Ball Room", "Kitchen", "Conservatory", "Ball Room", "Ball Room"};
+        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,4}, {19,8},{19,15}};
         for (int i = 0; i < uniqueRoomNames.length; i++)
         {
             Room temproom = new Room(uniqueRoomNames[i]);
@@ -252,7 +252,9 @@ public class map {
                 }
             }
             if (map[play.xPos][play.yPos] == 'd') {
-                this.enterRoom(play, play.xPos, play.yPos);
+                if (!this.enterRoom(play, play.xPos, play.yPos)) {
+                    return false;
+                };
                 break;
             }
         }
@@ -295,7 +297,7 @@ public class map {
         return;
     }
 
-    public void enterRoom(Player p, int x, int y) {
+    public boolean enterRoom(Player p, int x, int y) {
         Room roomtoenter = doors.get(new coordinate(x, y));
         System.out.println("Entering room " + roomtoenter.name + ".");
         p.currentRoom = roomtoenter;
@@ -312,7 +314,7 @@ public class map {
                         break;
                     } else {
                         this.lose(p);
-                        break;
+                        return false;
                     }
                 } else {
                     p.guess();
@@ -323,7 +325,7 @@ public class map {
                 continue;   
             }
         } 
-        return;
+        return true;
     }
     public String playerstring() {
         String output = "Number of NPCs: " + (6 - nplay);
