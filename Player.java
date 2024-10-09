@@ -26,41 +26,45 @@ public class Player {
         guesses = new ArrayList<String>();
     }
 
+    public String inputCheck(Scanner input, String phrase, String ... options) {
+        String validInput = "";
+        boolean notValid = true;
+        do {
+            try {
+                System.out.print(phrase);
+                validInput = input.nextLine();
+                for (int i = 0; i < options.length; i++) {
+                    if (validInput.equalsIgnoreCase(options[i])) {
+                        notValid = false;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid Input: Please try again.");
+                continue;
+            }
+            if (notValid) {
+                System.out.println("Invalid Input: Please try again.");
+            }
+        } while (notValid);
+        return validInput;
+    }
+
     public void update() {
         card = new Scorecard();
     }
 
     public void guess() {
         ArrayList<String> tempGuesses = new ArrayList<String>();
-        System.out.println(card); //Displays Scorecard
-        do {
-            try {
-                System.out.print("You are in the " + currentRoom.name + " right now.\r\n"
-                    + "Please type the name of the character you would like to accuse (Case Sensitive): ");
-                tempGuesses.add(input.nextLine());
-                break;
-            } catch (Exception e) {
-                System.out.println("Invalid input: Please try again.");
-                continue;
-            }
-        } while (true);
-        do {
-            try {
-                System.out.print("Please type the name of the weapon you would like to guess (Case Sensetive): ");
-                tempGuesses.add(input.nextLine());
-                break;
-            } catch (Exception e) {
-                System.out.println("Invalid input: Please try again.");
-                continue;
-            }
-        } while (true);
+        System.out.println(card + "\r\nYou are in the " + currentRoom.name + " right now."); //Displays Scorecard
+        tempGuesses.add(this.inputCheck(input, "Please type the name of the character you would like to accuse: ", card.getPeople()));
+        tempGuesses.add(this.inputCheck(input, "Please type the name of the weapon you would like to guess: ", card.getWeapons()));
         tempGuesses.add(currentRoom.name);
 
         boolean hasCard = false;
         ArrayList<String> cardsHad = new ArrayList<>();
 
         for (int p = 1; p < 6; p++) {
-            for (int tG = 0; tG < 3; tG++) {
+            for (int tG = 0; tG < 3; tG++) { //tG = tempGuesses
                 for (int h = 0; h < 3; h++) {
                     // System.out.println("Guess: " + tempGuesses.get(tG) + " Hand: " + card.getPlayers(p).hand.get(h));
                     if (tempGuesses.get(tG).equalsIgnoreCase(card.getPlayers(p).hand.get(h))) {
@@ -79,17 +83,26 @@ public class Player {
                     System.out.print(cardsHad.get(s) + "\r\n");
                 }
 
-                String cardRevealed;
-                do {
-                    try {
-                        System.out.print("\r\nCard to be revealed (Case Sensitive): ");
-                        cardRevealed = input.nextLine();
-                        break;
-                    } catch (Exception e) {
-                        System.out.println("Invalid input: Please try again.");
-                        continue;
+                String[] cardsHadArr = new String[cardsHad.size()];
+                for (int cH = 0; cH < cardsHad.size(); cH++) {
+                    cardsHadArr[cH] = cardsHad.get(cH);
+                }
+
+                String cardRevealed = this.inputCheck(input, "\r\nCard to be revealed: ", cardsHadArr).toLowerCase();
+                String partOne = cardRevealed.substring(0, 1).toUpperCase();
+                String partTwo = cardRevealed.substring(1, cardRevealed.length());
+                cardRevealed = partOne + partTwo;
+                System.out.println(cardRevealed);
+
+                for (int s = 0; s < cardRevealed.length(); s++) {
+                    if (cardRevealed.substring(s, s + 1).equals(" ")) {
+                        partOne = cardRevealed.substring(0, s - 1);
+                        partTwo = cardRevealed.substring(s - 1, s).toUpperCase();
+                        cardRevealed = partOne + partTwo + cardRevealed.substring(s, cardRevealed.length());
                     }
-                } while (true);
+                }
+
+                System.out.println(cardRevealed);
 
                 System.out.println("\r\n" + card.getPlayers(p).name + ", please pass the screen back to " + name + ".\r\n"
                     + name + ", please press enter to confirm that only you are looking at the screen.");
@@ -167,6 +180,7 @@ public class Player {
         private HashMap<String, String> weapons = new HashMap<>();
         private HashMap<String, String> rooms = new HashMap<>();
         private ArrayList<Player> players = new ArrayList<>();
+        private String[] peopleCards = new String[6];
         private String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         private String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
 
@@ -232,6 +246,28 @@ public class Player {
                     players.get(0).card.setRooms(players.get(0).hand.get(c), "X");
                 }
             }
+
+            //fills peopleCards
+            for (int p = 0; p < 6; p++) {
+                peopleCards[p] = players.get(p).name;
+            }
+
+            //set O's for cards you know you don't have
+            for (int p = 0; p < 6; p++) {
+                if (players.get(0).card.getPeople(players.get(p).name).equals(" ")) {
+                    players.get(0).card.setPeople(players.get(p).name, "O");
+                }
+            }
+            for (int w = 0; w < 6; w++) {
+                if (players.get(0).card.getWeapons(weaponCards[w]).equals(" ")) {
+                    players.get(0).card.setWeapons(weaponCards[w], "O");
+                }
+            }
+            for (int r = 0; r < 9; r++) {
+                if (players.get(0).card.getRooms(roomCards[r]).equals(" ")) {
+                    players.get(0).card.setRooms(roomCards[ r], "O");
+                }
+            }
         }
 
                 //Getters and Setters Below
@@ -247,6 +283,10 @@ public class Player {
             return weapons.get(key);
         }
 
+        public String[] getWeapons() {
+            return weaponCards;
+        }
+
         public void setWeapons(String key, String value) {
             weapons.put(key, value);
         }
@@ -255,12 +295,20 @@ public class Player {
             return rooms.get(key);
         }
 
+        public String[] getRooms() {
+            return roomCards;
+        }
+
         public void setRooms(String key, String value) {
             rooms.put(key, value);
         }
         
         public Player getPlayers(int i) {
             return players.get(i);
+        }
+
+        public String[] getPeople() {
+            return peopleCards;
         }
 
         public void setPlayers(int index, Player p) {
@@ -323,7 +371,7 @@ public class Player {
             }
 
             //Divider
-            display += "|";
+            display += " ";
             for (int i = 0; i < 111; i++) {
                 display += "-";
             }
@@ -344,7 +392,7 @@ public class Player {
             }
 
             //Divider
-            display += "|";
+            display += " ";
             for (int i = 0; i < 111; i++) {
                 display += "-";
             }

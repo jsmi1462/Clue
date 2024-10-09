@@ -24,7 +24,7 @@ public class NPC extends Player {
     }
 
     public NPC cloneName(String s) {
-        NPC temp = new NPC(s);
+        NPC temp = new NPC(s, currMap);
         return temp;
     }
 
@@ -154,7 +154,7 @@ public class NPC extends Player {
     
     @Override
     public NPC clone() {
-        NPC n = new NPC(this.name);
+        NPC n = new NPC(this.name, currMap);
         return n;
     }
     public String toString() {
