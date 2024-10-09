@@ -229,16 +229,28 @@ public class Player {
             for (int p = 0; p < 6; p++) {
                 if (players.get(0).card.getPeople(players.get(p).name).equals(" ")) {
                     players.get(0).card.setPeople(players.get(p).name, "O");
+                } else {
+                    for (int oP = 1; oP < 6; oP++) { //oP = other Players
+                        players.get(oP).card.setPeople(peopleCards[p], "O");
+                    }
                 }
             }
             for (int w = 0; w < 6; w++) {
                 if (players.get(0).card.getWeapons(weaponCards[w]).equals(" ")) {
                     players.get(0).card.setWeapons(weaponCards[w], "O");
+                } else {
+                    for (int oW = 1; oW < 6; oW++) { //oW = other Weapons
+                        players.get(oW).card.setPeople(weaponCards[w], "O");
+                    }
                 }
             }
             for (int r = 0; r < 9; r++) {
                 if (players.get(0).card.getRooms(roomCards[r]).equals(" ")) {
-                    players.get(0).card.setRooms(roomCards[ r], "O");
+                    players.get(0).card.setRooms(roomCards[r], "O");
+                } else {
+                    for (int oR = 1; oR < 6; oR++) { //oR = other Rooms
+                        players.get(oR).card.setPeople(roomCards[r], "O");
+                    }
                 }
             }
         }
