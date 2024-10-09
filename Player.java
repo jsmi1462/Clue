@@ -207,12 +207,15 @@ public class Player {
             Player playerClone = tempNext.clone();
             for (int p = 0; p < 5; p++) {
                 players.add(playerClone);
+                //System.out.println("adding" + playerClone);
+                //System.out.println(players);
                 tempNext = tempNext.nextPlayer;
                 playerClone = tempNext.clone();
             }
             players.add(0, playerClone);
             for (int p = 0; p < 6; p++) {
                 for (int h = 0; h < 6; h++) {
+                    //System.out.println(players);
                     players.get(p).card.setPeople(players.get(h).name, " ");
                 }
             }
@@ -220,6 +223,7 @@ public class Player {
             for (int c = 0; c < 3; c++) {
                 room = true;
                 for (int x = 0; x < 6; x++) {
+                    System.out.println(players.get(0).hand);
                     if (players.get(0).hand.get(c).equals(weaponCards[x])) {
                         players.get(0).card.setWeapons(weaponCards[x], "X");
                         room = false;

@@ -9,7 +9,8 @@ public class NPC extends Player {
     public Room currentRoom;
     public String name;
     public ArrayList<String> hand;
-    public Player nextplayer;
+    public ArrayList<String> guesses;
+    public Player nextPlayer;
     public map currMap;
     public Room currTarget;
     public ArrayList<Character> currPath;
@@ -21,11 +22,14 @@ public class NPC extends Player {
         name = n;
         map = m;
         isNPC = true;
+        hand = new ArrayList<String>();
+        guesses = new ArrayList<String>();
+
     }
 
-    public NPC cloneName(String s) {
-        NPC temp = new NPC(s, map);
-        return temp;
+    @Override
+    public void update() {
+        card = new Scorecard();
     }
 
     public int findPath(int moves, Room room) {
@@ -155,6 +159,9 @@ public class NPC extends Player {
     @Override
     public NPC clone() {
         NPC n = new NPC(this.name, map);
+        n.hand = this.hand;
+        n.guesses = this.guesses;
+        n.card = this.card;
         return n;
     }
     public String toString() {

@@ -68,7 +68,7 @@ public class map {
         "Ball Room", "Kitchen", "Conservatory"};
         String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billard Room", "Billard Room",
             "Ball Room", "Ball Room", "Kitchen", "Conservatory", "Ball Room", "Ball Room"};
-        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,10},{6,11},{8,6},{9,17},{10,3},{12,1},{15,6},{17,10},{17,15},{18,19},{19,4}, {19,8},{19,15}};
+        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,11},{6,12},{8,6},{9,17},{10,3},{12,1},{15,5},{17,10},{17,15},{18,19},{19,4}, {19,8},{19,15}};
         for (int i = 0; i < uniqueRoomNames.length; i++)
         {
             Room temproom = new Room(uniqueRoomNames[i]);
@@ -106,9 +106,10 @@ public class map {
 
         for (int i = 0; i < 6 - nplayers; i ++) {
             String npcname = npcnames.remove((int) Math.random()* (npcnames.size()));
-            NPC temp = new NPC(npcname, this);
+            Player temp = new NPC(npcname, this);
             System.out.println("NPC " + i + " is " + temp + "!");
-            players.add(temp.cloneName());
+            players.add(temp.clone());
+            players.get(nplayers + i).hand = new ArrayList<String>();
         }
 
         linkplayers();
@@ -339,10 +340,12 @@ public class map {
 //Gant Section Start
 
     public void dealCards() {
+        System.out.println(players);
         String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
-        for (int i = 0; i < 6; i++) {
-            cards.add(players.get(i).name);
+
+        for (Player p : players) {
+            cards.add(p.toString());
         }
         for (String weapon : weaponCards) {
             cards.add(weapon);
@@ -363,6 +366,8 @@ public class map {
         for (int i = 0; i < 6; i++) {
             for (int u = 0; u < 3; u++) {
                 x = (int) (Math.random() * temp.size());
+                System.out.println(temp);
+                System.out.println(players.get(i).hand);
                 players.get(i).hand.add(temp.get(x));
                 temp.remove(x);
             }
