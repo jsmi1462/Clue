@@ -188,13 +188,7 @@ public class map {
             while (valid == false) {
                 //boolean amove = false;
                 //while (amove == false) {
-                System.out.println("Enter move: w for up, a for left, d for right, s for down:");
-                BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-                try {
-                move = input.readLine();
-                } catch (IOException e) {
-                continue;
-                }
+                move = players.get(player).inputCheck(players.get(player).input, "Enter move: w for up, a for left, d for right, s for down:", "w", "a", "s", "d");
                 //String[] validmoves = new String[]{"w", "a", "s", "d"};
                 //for (String validmove: validmoves) {
                 //    amove = (move.equals(validmove));

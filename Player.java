@@ -35,6 +35,7 @@ public class Player {
                 validInput = input.nextLine();
                 for (int i = 0; i < options.length; i++) {
                     if (validInput.equalsIgnoreCase(options[i])) {
+                        validInput = options[i];
                         notValid = false;
                     }
                 }
@@ -54,7 +55,7 @@ public class Player {
     }
 
     public void guess() {
-        ArrayList<String> tempGuesses = new ArrayList<String>();
+        ArrayList<String> tempGuesses = new ArrayList<>();
         System.out.println(card + "\r\nYou are in the " + currentRoom.name + " right now."); //Displays Scorecard
         tempGuesses.add(this.inputCheck(input, "Please type the name of the character you would like to accuse: ", card.getPeople()));
         tempGuesses.add(this.inputCheck(input, "Please type the name of the weapon you would like to guess: ", card.getWeapons()));
@@ -88,21 +89,7 @@ public class Player {
                     cardsHadArr[cH] = cardsHad.get(cH);
                 }
 
-                String cardRevealed = this.inputCheck(input, "\r\nCard to be revealed: ", cardsHadArr).toLowerCase();
-                String partOne = cardRevealed.substring(0, 1).toUpperCase();
-                String partTwo = cardRevealed.substring(1, cardRevealed.length());
-                cardRevealed = partOne + partTwo;
-                System.out.println(cardRevealed);
-
-                for (int s = 0; s < cardRevealed.length(); s++) {
-                    if (cardRevealed.substring(s, s + 1).equals(" ")) {
-                        partOne = cardRevealed.substring(0, s - 1);
-                        partTwo = cardRevealed.substring(s - 1, s).toUpperCase();
-                        cardRevealed = partOne + partTwo + cardRevealed.substring(s, cardRevealed.length());
-                    }
-                }
-
-                System.out.println(cardRevealed);
+                String cardRevealed = this.inputCheck(input, "\r\nCard to be revealed: ", cardsHadArr);
 
                 System.out.println("\r\n" + card.getPlayers(p).name + ", please pass the screen back to " + name + ".\r\n"
                     + name + ", please press enter to confirm that only you are looking at the screen.");
@@ -129,24 +116,10 @@ public class Player {
 
     public boolean finalGuess() {
         boolean correct = false;
-        int x = 0;
         ArrayList<String> finalGuesses = new ArrayList<>();
-        do {
-            try {
-                if (x == 0) {
-                    System.out.print("Character: ");
-                    finalGuesses.add(input.nextLine());
-                    x++;
-                } else if (x == 1) {
-                    System.out.print("Weapon: ");
-                    finalGuesses.add(input.nextLine());
-                    break;
-                }
-            } catch (Exception e) {
-                continue;
-            }
-        } while (true);
-        finalGuesses.add(currentRoom.name);
+        finalGuesses.add(this.inputCheck(input, "Character: ", card.getPeople()));
+        finalGuesses.add(this.inputCheck(input, "Weapon: ", card.getWeapons()));
+        finalGuesses.add(this.inputCheck(input, "Room: ", card.getRooms()));
         if (finalGuesses.get(0).equalsIgnoreCase(map.answer[0]) &&
             finalGuesses.get(1).equalsIgnoreCase(map.answer[1]) &&
             finalGuesses.get(2).equalsIgnoreCase(map.answer[2])) {
@@ -420,5 +393,4 @@ public class Player {
             return display;
         }
     }
-
 }
