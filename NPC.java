@@ -29,7 +29,7 @@ public class NPC extends Player {
 
     @Override
     public void update() {
-        card = new Scorecard();
+        card = new Scorecard(this);
     }
 
     public int findPath(int moves, Room room) {
@@ -85,7 +85,6 @@ public class NPC extends Player {
 
     public String findBestWeapon() {
         return "";// placeholder
-
     }
 
     public String findBestPerson() {
@@ -157,11 +156,17 @@ public class NPC extends Player {
     }
     
     @Override
+    public void printHand() {
+        System.out.println("current NPC has hand" + hand);
+    }
+    
+    @Override
     public NPC clone() {
+        System.out.println("Cloning NPC with hand " + this.hand);
         NPC n = new NPC(this.name, map);
         n.hand = this.hand;
-        n.guesses = this.guesses;
-        n.card = this.card;
+        n.guesses = guesses;
+        n.card = card;
         return n;
     }
     public String toString() {

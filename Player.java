@@ -51,9 +51,11 @@ public class Player {
     }
 
     public void update() {
-        card = new Scorecard();
+        card = new Scorecard(this);
     }
-
+    public void printHand() {
+        System.out.println(this.hand);
+    }
     public void guess() {
         ArrayList<String> tempGuesses = new ArrayList<>();
         System.out.println(card + "\r\nYou are in the " + currentRoom.name + " right now."); //Displays Scorecard
@@ -140,7 +142,7 @@ public class Player {
             temp.hand.add(hand.get(i));
         }
         temp.nextPlayer = this.nextPlayer;
-        temp.card = new Scorecard();
+        temp.card = new Scorecard(temp);
         return temp;
     }
 
@@ -156,9 +158,10 @@ public class Player {
         private String[] peopleCards = new String[6];
         private String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         private String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
+        private Player currentPlayer; 
 
-
-        public Scorecard() { //Constructor that fills hashmaps
+        public Scorecard(Player p) { //Constructor that fills hashmaps
+            currentPlayer = p;
             for (int w = 0; w < 6; w++) {
                 weapons.put(weaponCards[w], " ");
             }
@@ -190,16 +193,20 @@ public class Player {
         }
 
         public void update() { //Called only one time once all players are created in Map
-            Player tempNext = nextPlayer;
+            System.out.println(currentPlayer.hand);
+            System.out.println(currentPlayer.hand);
+            currentPlayer.printHand();
+
+            Player tempNext = currentPlayer;
             Player playerClone = tempNext.clone();
-            for (int p = 0; p < 5; p++) {
+            for (int p = 0; p < 6; p++) {
                 players.add(playerClone);
+                //players.get(p).hand = playerClone.hand;
                 //System.out.println("adding" + playerClone);
                 //System.out.println(players);
                 tempNext = tempNext.nextPlayer;
                 playerClone = tempNext.clone();
             }
-            players.add(0, playerClone);
             for (int p = 0; p < 6; p++) {
                 for (int h = 0; h < 6; h++) {
                     //System.out.println(players);

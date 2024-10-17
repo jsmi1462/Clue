@@ -360,8 +360,8 @@ public class map {
         for (int i = 0; i < 6; i++) {
             for (int u = 0; u < 3; u++) {
                 x = (int) (Math.random() * temp.size());
-                System.out.println(temp);
-                System.out.println(players.get(i).hand);
+                //System.out.println(temp);
+                //System.out.println(players.get(i).hand);
                 players.get(i).hand.add(temp.get(x));
                 temp.remove(x);
             }
