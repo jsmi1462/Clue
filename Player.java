@@ -245,6 +245,7 @@ public class Player {
                 }
             }
 
+/*            
             //set O's for cards you know you don't have
             for (int p = 0; p < 6; p++) {
                 if (players.get(0).card.getPeople(peopleCards[p]).equals(" ")) {
@@ -273,6 +274,7 @@ public class Player {
                     }
                 }
             }
+*/                
         }
 
                 //Getters and Setters Below
