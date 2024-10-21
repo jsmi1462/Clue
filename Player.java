@@ -98,10 +98,25 @@ public class Player {
                 System.out.println("\r\n" + card.getPlayers(p) + " has revealed the card \"" + cardRevealed + "\" to you. This information has been recorded!\r\n");
                 if (tempGuesses.indexOf(cardRevealed) == 0) {
                     card.getPlayers(p).card.setPeople(cardRevealed, "X");
+                    for (int oP = 1; oP < 6; oP++) { //oP = other People
+                        if (oP != p) {
+                            card.getPlayers(oP).card.setPeople(cardRevealed, "O");
+                        }
+                    }
                 } else if (tempGuesses.indexOf(cardRevealed) == 1) {
                     card.getPlayers(p).card.setWeapons(cardRevealed, "X");
+                    for (int oW = 1; oW < 6; oW++) { //oW = other Weapons
+                        if (oW != p) {
+                            card.getPlayers(oW).card.setWeapons(cardRevealed, "O");
+                        }
+                    }
                 } else {
                     card.getPlayers(p).card.setRooms(cardRevealed, "X");
+                    for (int oR = 1; oR < 6; oR++) { //oR = other Rooms
+                        if (oR != p) {
+                            card.getPlayers(oR).card.setPeople(cardRevealed, "O");
+                        }
+                    }
                 }
                 break;
             } else {
@@ -200,10 +215,16 @@ public class Player {
                 playerClone = tempNext.clone();
             }
             players.add(0, playerClone);
+
+            //fills peopleCards
+            for (int p = 0; p < 6; p++) {
+                peopleCards[p] = players.get(p).name;
+            }
+
             for (int p = 0; p < 6; p++) {
                 for (int h = 0; h < 6; h++) {
                     //System.out.println(players);
-                    players.get(p).card.setPeople(players.get(h).name, " ");
+                    players.get(p).card.setPeople(peopleCards[h], " ");
                 }
             }
             boolean room;
@@ -214,8 +235,8 @@ public class Player {
                     if (players.get(0).hand.get(c).equals(weaponCards[x])) {
                         players.get(0).card.setWeapons(weaponCards[x], "X");
                         room = false;
-                    } else if (players.get(0).hand.get(c).equals(players.get(x).name)) {
-                        players.get(0).card.setPeople(players.get(x).name, "X");
+                    } else if (players.get(0).hand.get(c).equals(peopleCards[x])) {
+                        players.get(0).card.setPeople(peopleCards[x], "X");
                         room = false;
                     }
                 }
@@ -224,17 +245,12 @@ public class Player {
                 }
             }
 
-            //fills peopleCards
-            for (int p = 0; p < 6; p++) {
-                peopleCards[p] = players.get(p).name;
-            }
-
             //set O's for cards you know you don't have
             for (int p = 0; p < 6; p++) {
-                if (players.get(0).card.getPeople(players.get(p).name).equals(" ")) {
-                    players.get(0).card.setPeople(players.get(p).name, "O");
+                if (players.get(0).card.getPeople(peopleCards[p]).equals(" ")) {
+                    players.get(0).card.setPeople(peopleCards[p], "O");
                 } else {
-                    for (int oP = 1; oP < 6; oP++) { //oP = other Players
+                    for (int oP = 1; oP < 6; oP++) { //oP = other People
                         players.get(oP).card.setPeople(peopleCards[p], "O");
                     }
                 }
@@ -244,7 +260,7 @@ public class Player {
                     players.get(0).card.setWeapons(weaponCards[w], "O");
                 } else {
                     for (int oW = 1; oW < 6; oW++) { //oW = other Weapons
-                        players.get(oW).card.setPeople(weaponCards[w], "O");
+                        players.get(oW).card.setWeapons(weaponCards[w], "O");
                     }
                 }
             }
@@ -253,7 +269,7 @@ public class Player {
                     players.get(0).card.setRooms(roomCards[r], "O");
                 } else {
                     for (int oR = 1; oR < 6; oR++) { //oR = other Rooms
-                        players.get(oR).card.setPeople(roomCards[r], "O");
+                        players.get(oR).card.setRooms(roomCards[r], "O");
                     }
                 }
             }
@@ -341,20 +357,20 @@ public class Player {
             }
             display += "|";
             for (int i = 0; i < 6; i++) {
-                display += this.fillSpace(15, players.get(i).name) + "|";
+                display += this.fillSpace(15, peopleCards[i]) + "|";
             }
 
             //Characters
             display += "\r\n";
             for (int i = 0; i < 6; i++) {
                 display += "| ";
-                display += players.get(i).name;
-                for (int j = 0; j < 14 - players.get(i).name.length(); j++) {
+                display += peopleCards[i];
+                for (int j = 0; j < 14 - peopleCards[i].length(); j++) {
                     display += " ";
                 }
                 display += "|";
                 for (int p = 0; p < 6; p++) {
-                    display += this.fillSpace(15, players.get(p).card.getPeople(players.get(i).name)) + "|";
+                    display += this.fillSpace(15, players.get(p).card.getPeople(peopleCards[i])) + "|";
                 }
                 display += "\r\n";
             }
