@@ -199,7 +199,7 @@ public class Player {
 
             Player tempNext = currentPlayer;
             Player playerClone = tempNext.clone();
-            for (int p = 0; p < 6; p++) {
+            for (int p = 0; p < 5; p++) {
                 players.add(playerClone);
                 //players.get(p).hand = playerClone.hand;
                 //System.out.println("adding" + playerClone);
