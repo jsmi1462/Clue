@@ -213,6 +213,14 @@ public class Player {
                     players.get(p).card.setPeople(players.get(h).name, " ");
                 }
             }
+
+            players.add(0, playerClone);
+            
+            //fills peopleCards
+            for (int p = 0; p < 6; p++) {
+                peopleCards[p] = players.get(p).name;
+            }
+            
             boolean room;
             for (int c = 0; c < 3; c++) {
                 room = true;
@@ -231,10 +239,6 @@ public class Player {
                 }
             }
 
-            //fills peopleCards
-            for (int p = 0; p < 6; p++) {
-                peopleCards[p] = players.get(p).name;
-            }
 
             //set O's for cards you know you don't have
             for (int p = 0; p < 6; p++) {
