@@ -205,10 +205,15 @@ public class Player {
         }
 
         public void update() { //Called only one time once all players are created in Map
+            System.out.println(currentPlayer.hand);
+            System.out.println(currentPlayer.hand);
+            currentPlayer.printHand();
+            
             Player tempNext = nextPlayer;
             Player playerClone = tempNext.clone();
             for (int p = 0; p < 5; p++) {
                 players.add(playerClone);
+                //players.get(p).hand = playerClone.hand;
                 //System.out.println("adding" + playerClone);
                 //System.out.println(players);
                 tempNext = tempNext.nextPlayer;
