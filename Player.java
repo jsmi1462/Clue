@@ -51,11 +51,9 @@ public class Player {
     }
 
     public void update() {
-        card = new Scorecard(this);
+        card = new Scorecard();
     }
-    public void printHand() {
-        System.out.println(this.hand);
-    }
+
     public void guess() {
         ArrayList<String> tempGuesses = new ArrayList<>();
         System.out.println(card + "\r\nYou are in the " + currentRoom.name + " right now."); //Displays Scorecard
@@ -100,10 +98,25 @@ public class Player {
                 System.out.println("\r\n" + card.getPlayers(p) + " has revealed the card \"" + cardRevealed + "\" to you. This information has been recorded!\r\n");
                 if (tempGuesses.indexOf(cardRevealed) == 0) {
                     card.getPlayers(p).card.setPeople(cardRevealed, "X");
+                    for (int oP = 1; oP < 6; oP++) { //oP = other People
+                        if (oP != p) {
+                            card.getPlayers(oP).card.setPeople(cardRevealed, "O");
+                        }
+                    }
                 } else if (tempGuesses.indexOf(cardRevealed) == 1) {
                     card.getPlayers(p).card.setWeapons(cardRevealed, "X");
+                    for (int oW = 1; oW < 6; oW++) { //oW = other Weapons
+                        if (oW != p) {
+                            card.getPlayers(oW).card.setWeapons(cardRevealed, "O");
+                        }
+                    }
                 } else {
                     card.getPlayers(p).card.setRooms(cardRevealed, "X");
+                    for (int oR = 1; oR < 6; oR++) { //oR = other Rooms
+                        if (oR != p) {
+                            card.getPlayers(oR).card.setPeople(cardRevealed, "O");
+                        }
+                    }
                 }
                 break;
             } else {
@@ -142,7 +155,7 @@ public class Player {
             temp.hand.add(hand.get(i));
         }
         temp.nextPlayer = this.nextPlayer;
-        temp.card = new Scorecard(temp);
+        temp.card = new Scorecard();
         return temp;
     }
 
@@ -158,10 +171,9 @@ public class Player {
         private String[] peopleCards = new String[6];
         private String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         private String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
-        private Player currentPlayer; 
 
-        public Scorecard(Player p) { //Constructor that fills hashmaps
-            currentPlayer = p;
+
+        public Scorecard() { //Constructor that fills hashmaps
             for (int w = 0; w < 6; w++) {
                 weapons.put(weaponCards[w], " ");
             }
@@ -196,8 +208,8 @@ public class Player {
             System.out.println(currentPlayer.hand);
             System.out.println(currentPlayer.hand);
             currentPlayer.printHand();
-
-            Player tempNext = currentPlayer;
+            
+            Player tempNext = nextPlayer;
             Player playerClone = tempNext.clone();
             for (int p = 0; p < 5; p++) {
                 players.add(playerClone);
@@ -207,20 +219,19 @@ public class Player {
                 tempNext = tempNext.nextPlayer;
                 playerClone = tempNext.clone();
             }
-            for (int p = 0; p < 6; p++) {
-                for (int h = 0; h < 6; h++) {
-                    //System.out.println(players);
-                    players.get(p).card.setPeople(players.get(h).name, " ");
-                }
-            }
-
             players.add(0, playerClone);
-            
+
             //fills peopleCards
             for (int p = 0; p < 6; p++) {
                 peopleCards[p] = players.get(p).name;
             }
-            
+
+            for (int p = 0; p < 6; p++) {
+                for (int h = 0; h < 6; h++) {
+                    //System.out.println(players);
+                    players.get(p).card.setPeople(peopleCards[h], " ");
+                }
+            }
             boolean room;
             for (int c = 0; c < 3; c++) {
                 room = true;
@@ -229,8 +240,8 @@ public class Player {
                     if (players.get(0).hand.get(c).equals(weaponCards[x])) {
                         players.get(0).card.setWeapons(weaponCards[x], "X");
                         room = false;
-                    } else if (players.get(0).hand.get(c).equals(players.get(x).name)) {
-                        players.get(0).card.setPeople(players.get(x).name, "X");
+                    } else if (players.get(0).hand.get(c).equals(peopleCards[x])) {
+                        players.get(0).card.setPeople(peopleCards[x], "X");
                         room = false;
                     }
                 }
@@ -239,13 +250,13 @@ public class Player {
                 }
             }
 
-
+/*            
             //set O's for cards you know you don't have
             for (int p = 0; p < 6; p++) {
-                if (players.get(0).card.getPeople(players.get(p).name).equals(" ")) {
-                    players.get(0).card.setPeople(players.get(p).name, "O");
+                if (players.get(0).card.getPeople(peopleCards[p]).equals(" ")) {
+                    players.get(0).card.setPeople(peopleCards[p], "O");
                 } else {
-                    for (int oP = 1; oP < 6; oP++) { //oP = other Players
+                    for (int oP = 1; oP < 6; oP++) { //oP = other People
                         players.get(oP).card.setPeople(peopleCards[p], "O");
                     }
                 }
@@ -255,7 +266,7 @@ public class Player {
                     players.get(0).card.setWeapons(weaponCards[w], "O");
                 } else {
                     for (int oW = 1; oW < 6; oW++) { //oW = other Weapons
-                        players.get(oW).card.setPeople(weaponCards[w], "O");
+                        players.get(oW).card.setWeapons(weaponCards[w], "O");
                     }
                 }
             }
@@ -264,10 +275,11 @@ public class Player {
                     players.get(0).card.setRooms(roomCards[r], "O");
                 } else {
                     for (int oR = 1; oR < 6; oR++) { //oR = other Rooms
-                        players.get(oR).card.setPeople(roomCards[r], "O");
+                        players.get(oR).card.setRooms(roomCards[r], "O");
                     }
                 }
             }
+*/                
         }
 
                 //Getters and Setters Below
@@ -352,20 +364,20 @@ public class Player {
             }
             display += "|";
             for (int i = 0; i < 6; i++) {
-                display += this.fillSpace(15, players.get(i).name) + "|";
+                display += this.fillSpace(15, peopleCards[i]) + "|";
             }
 
             //Characters
             display += "\r\n";
             for (int i = 0; i < 6; i++) {
                 display += "| ";
-                display += players.get(i).name;
-                for (int j = 0; j < 14 - players.get(i).name.length(); j++) {
+                display += peopleCards[i];
+                for (int j = 0; j < 14 - peopleCards[i].length(); j++) {
                     display += " ";
                 }
                 display += "|";
                 for (int p = 0; p < 6; p++) {
-                    display += this.fillSpace(15, players.get(p).card.getPeople(players.get(i).name)) + "|";
+                    display += this.fillSpace(15, players.get(p).card.getPeople(peopleCards[i])) + "|";
                 }
                 display += "\r\n";
             }
