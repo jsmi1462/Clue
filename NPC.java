@@ -9,22 +9,27 @@ public class NPC extends Player {
     public Room currentRoom;
     public String name;
     public ArrayList<String> hand;
-    public Player nextplayer;
+    public ArrayList<String> guesses;
+    public Player nextPlayer;
     public map currMap;
     public Room currTarget;
     public ArrayList<Character> currPath;
-    public boolean isNPC; 
-    public Scorecard card;
-    public String answerroom;
-    public String answerplayer;
-    public String answerweapon;
+    public boolean isNPC;
+    public map map;
 
-    public NPC (String n) {
+    public NPC (String n, map m) {
         currentRoom = null;
         name = n;
+        map = m;
         isNPC = true;
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
+
+    }
+
+    @Override
+    public void update() {
+        card = new Scorecard(this);
     }
 
     public int findPath(int moves, Room room) {
@@ -55,7 +60,7 @@ public class NPC extends Player {
     }
     public void pathfindMain(int moves) {
         int bestvalue = calcRoomValue(moves, currMap.rooms.get(0));
-        
+        int infinity = 1000000;
         Room bestroom = currMap.rooms.get(0);
         for (Room room: currMap.rooms) {
             int thisvalue = calcRoomValue(moves, room);
@@ -70,53 +75,43 @@ public class NPC extends Player {
     public int calcRoomValue(int moves, Room room) {
         int thisvalue = 0;
         int distance = findPath(moves, room) - moves;
-        int infinity = 1000000;
         distance = (int) (distance + 6) / 7;
         thisvalue -= (distance * 3);
-
-        if (answerroom.equalsIgnoreCase(room.toString())) return thisvalue;
-
-        switch(card.checkCard("Room", room.toString())) {
-            case (0 - 1): 
-                return thisvalue;
-            case 0:
-                if (answerroom != null) return thisvalue + 100;
-                return thisvalue - (infinity) / 2;
-            case 1: 
-                return thisvalue - infinity;
-        }
-        return (0 - 4 + card.checkCard("Room", room.toString()));
+        // if room unknown, done
+        // if room = yours, 100 if ans, -inf/2 if no ans
+        // if room = next in line, -infty, etc.
+        return thisvalue;
     }
 
     public String findbestweapon() {
-        double bestvalue = calcweaponvalue("Candlestick");
-        String bestweapon = "Candlestick";
-        for (String weapon: new String[]{"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"}) {
-            double thisvalue = calcweaponvalue(weapon);
-            if (thisvalue > bestvalue) {
-                bestvalue = thisvalue;
-                bestweapon = weapon;
-            }
-
+    double bestvalue = calcweaponvalue("Candlestick");
+    String bestweapon = "Candlestick";
+    for (String weapon: new String[]{"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"}) {
+        double thisvalue = calcweaponvalue(weapon);
+        if (thisvalue > bestvalue) {
+            bestvalue = thisvalue;
+            bestweapon = weapon;
         }
-        return bestweapon;
 
+    }
+    return bestweapon;
     }
 
     public double calcweaponvalue (String weapon) 
-        {
-            int negativeInf= -1000000;
-            int b = 4;
-            int c = 1;
-            switch (card.checkCard("Weapon", weapon)) {
-                case(0):
-                    if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
-                    return (-0.1);
-                case (1):
-                    return negativeInf;
-            }
-            return (card.checkCard("Weapon", weapon) -2) * c - b;
-        } 
+    {
+        int negativeInf= -1000000;
+        int b = 4;
+        int c = 1;
+        switch (card.checkCard("Weapon", weapon)) {
+            case(0):
+                if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
+                return (-0.1);
+            case (1):
+                return negativeInf;
+        }
+        return (card.checkCard("Weapon", weapon) -2) * c - b;
+    } 
+
 
     public String findbestperson() {
         ArrayList<String> names = new ArrayList<>();
@@ -218,8 +213,17 @@ public class NPC extends Player {
     }
     
     @Override
+    public void printHand() {
+        System.out.println("current NPC has hand" + hand);
+    }
+    
+    @Override
     public NPC clone() {
-        NPC n = new NPC(this.name);
+        System.out.println("Cloning NPC with hand " + this.hand);
+        NPC n = new NPC(this.name, map);
+        n.hand = this.hand;
+        n.guesses = guesses;
+        n.card = card;
         return n;
     }
     public String toString() {
