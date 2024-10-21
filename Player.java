@@ -11,144 +11,138 @@ public class Player {
     public ArrayList<String> guesses;
     public Scorecard card;
     public boolean isNPC;
+    public map map;
 
     public Player() {
+
     }
 
-    public Player(String n) {
+    public Player(String n, map m) {
         currentRoom = null;
         name = n;
+        map = m;
         isNPC = false;
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
     }
 
-    public void update() {
-        card = new Scorecard();
-        card.players = new ArrayList<>();
-        Player temp = nextPlayer;
-        for (int i = 0; i < 5; i++) {
-            card.setPlayers(i, temp);
-            temp = temp.nextPlayer;
-        }
-        card.setPlayers(0, temp);
-//      card.update();
+    public String inputCheck(Scanner input, String phrase, String ... options) {
+        String validInput = "";
+        boolean notValid = true;
+        do {
+            try {
+                System.out.print(phrase);
+                validInput = input.nextLine();
+                for (int i = 0; i < options.length; i++) {
+                    if (validInput.equalsIgnoreCase(options[i])) {
+                        validInput = options[i];
+                        notValid = false;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid Input: Please try again.");
+                continue;
+            }
+            if (notValid) {
+                System.out.println("Invalid Input: Please try again.");
+            }
+        } while (notValid);
+        return validInput;
     }
 
+    public void update() {
+        card = new Scorecard(this);
+    }
+    public void printHand() {
+        System.out.println(this.hand);
+    }
     public void guess() {
-        ArrayList<String> tempGuesses = new ArrayList<String>();
-        Player tempNext = nextPlayer;
-        int firstParse = (int) (Math.random() * 3); //randomizes guesses to compare
-        boolean answer = false; //helps determine
-        System.out.println(card); //Displays Scorecard
-        boolean invalid = true;
-        do {
-            try {
-                System.out.print("You are in the " + currentRoom.name + " right now.\r\n"
-                    + "Please type the name of the character you would like to accuse: ");
-                tempGuesses.add(input.nextLine());
-            } catch (Exception e) {
-                System.out.println("Invalid input: Please try again.");
-                continue;
-            }
-            invalid = false;
-        } while (invalid);
-        invalid = true;
-        do {
-            try {
-                System.out.print("Please type the name of the weapon you would like to guess: ");
-                tempGuesses.add(input.nextLine());
-            } catch (Exception e) {
-                System.out.println("Invalid input: Please try again.");
-                continue;
-            }
-            invalid = false;
-        } while (invalid);
+        ArrayList<String> tempGuesses = new ArrayList<>();
+        System.out.println(card + "\r\nYou are in the " + currentRoom.name + " right now."); //Displays Scorecard
+        tempGuesses.add(this.inputCheck(input, "Please type the name of the character you would like to accuse: ", card.getPeople()));
+        tempGuesses.add(this.inputCheck(input, "Please type the name of the weapon you would like to guess: ", card.getWeapons()));
         tempGuesses.add(currentRoom.name);
-        for (int p = 0; p < 6; p++) { //loops through players
-            for (int i = 0; i < 3; i++) { //loops through guesses
-                for (int j = 0; j < 3; j++) { //loops through current players cards & finds match
-                    if (tempGuesses.get(firstParse).equalsIgnoreCase(tempNext.hand.get(j))) { //true if matched
-                        guesses.add(tempGuesses.get(firstParse));
-                        answer = false; //not final answer
-                        System.out.println(tempNext.name + " has revealed this card to you: " + tempGuesses.get(firstParse));
-                        if (firstParse == 0) { //determines which type of card has been revealed
-                            card.getPlayers().get(p).card.setPeople(tempGuesses.get(firstParse), "X");
-                        } else if (firstParse == 1) {
-                            card.getPlayers().get(p).card.setWeapons(tempGuesses.get(firstParse), "X");
-                        } else {
-                            card.getPlayers().get(p).card.setRooms(tempGuesses.get(firstParse), "X");
-                        }
-                        break;
-                    } else {
-                        answer = true;
+
+        boolean hasCard = false;
+        ArrayList<String> cardsHad = new ArrayList<>();
+
+        for (int p = 1; p < 6; p++) {
+            for (int tG = 0; tG < 3; tG++) { //tG = tempGuesses
+                for (int h = 0; h < 3; h++) {
+                    // System.out.println("Guess: " + tempGuesses.get(tG) + " Hand: " + card.getPlayers(p).hand.get(h));
+                    if (tempGuesses.get(tG).equalsIgnoreCase(card.getPlayers(p).hand.get(h))) {
+                        hasCard = true;
+                        cardsHad.add(tempGuesses.get(tG));
                     }
-                }
-                if (!answer) { //runs if card is guessed
-                    break;
-                } else if (firstParse / 2 == 0) { //runs if card not guessed, but not all guesses checked
-                    firstParse++;
-                } else if (i == 2) { //runs if final guess is not correct
-                    break;
-                } else { // runs if card not guessed, but not all guesses checked, allows cyling because random guesses checked
-                    firstParse = 0;
                 }
             }
-            if (answer) {
-                for (int i = 0; i < 3; i++) {
-                    if (firstParse == 0) {
-                        card.getPlayers().get(p).card.setPeople(tempGuesses.get(i), "O");
-                    } else if (firstParse == 1) {
-                        card.getPlayers().get(p).card.setWeapons(tempGuesses.get(i), "O");
-                    } else {
-                        card.getPlayers().get(p).card.setRooms(tempGuesses.get(i), "O");
-                    }
+            if (hasCard) {
+                System.out.println("\r\n" + name + ", please pass the screen to " + card.getPlayers(p).name + ".\r\n"
+                    + card.getPlayers(p).name + ", please press enter to confirm that only you are looking at the screen.");
+                input.nextLine();
+
+                System.out.print("\r\nPlease enter the card you would like to show to " + name + " out of the following:\r\n");
+                for (int s = 0; s < cardsHad.size(); s++) {
+                    System.out.print(cardsHad.get(s) + "\r\n");
                 }
-                System.out.println("You find that " + tempNext.name + " does not have any of the cards that you guessed! This discovery has been recorded!");
-            } else if (!answer) {
+
+                String[] cardsHadArr = new String[cardsHad.size()];
+                for (int cH = 0; cH < cardsHad.size(); cH++) {
+                    cardsHadArr[cH] = cardsHad.get(cH);
+                }
+
+                String cardRevealed = this.inputCheck(input, "\r\nCard to be revealed: ", cardsHadArr);
+
+                System.out.println("\r\n" + card.getPlayers(p).name + ", please pass the screen back to " + name + ".\r\n"
+                    + name + ", please press enter to confirm that only you are looking at the screen.");
+                input.nextLine();
+
+                System.out.println("\r\n" + card.getPlayers(p) + " has revealed the card \"" + cardRevealed + "\" to you. This information has been recorded!\r\n");
+                if (tempGuesses.indexOf(cardRevealed) == 0) {
+                    card.getPlayers(p).card.setPeople(cardRevealed, "X");
+                } else if (tempGuesses.indexOf(cardRevealed) == 1) {
+                    card.getPlayers(p).card.setWeapons(cardRevealed, "X");
+                } else {
+                    card.getPlayers(p).card.setRooms(cardRevealed, "X");
+                }
                 break;
             } else {
-                tempNext = tempNext.nextPlayer;
+                System.out.println("\r\n" + card.getPlayers(p).name + " did not have any of the cards you guessed. This information has been recorded!\r\n"
+                    + "Moving onto checking the cards of " + card.getPlayers(p + 1) + "...\r\n");
+                card.getPlayers(p).card.setPeople(tempGuesses.get(0), "O");
+                card.getPlayers(p).card.setWeapons(tempGuesses.get(1), "O");
+                card.getPlayers(p).card.setRooms(tempGuesses.get(2), "O");
             }
-        }
-        if (answer) { //prints that no one had the cards you guessed
-            System.out.println("Nobody had the cards you guessed...");
-            /* 
-            String drama = "That's quite the revelation...";
-            char[] chars = drama.toCharArray();
-            for (int i = 0; i < chars.length; i++) { //prints out characters every 0.1 seconds for dramatic effect
-                if (i > chars.length - 4) {
-                    Thread.sleep(500);
-                    System.out.print(chars[i]);
-                } else {
-                    Thread.sleep(100);
-                    System.out.print(chars[i]);
-                }
-            }
-            */
         }
     }
+
+    public boolean finalGuess() {
+        boolean correct = false;
+        ArrayList<String> finalGuesses = new ArrayList<>();
+        finalGuesses.add(this.inputCheck(input, "Character: ", card.getPeople()));
+        finalGuesses.add(this.inputCheck(input, "Weapon: ", card.getWeapons()));
+        finalGuesses.add(this.inputCheck(input, "Room: ", card.getRooms()));
+        if (finalGuesses.get(0).equalsIgnoreCase(map.answer[0]) &&
+            finalGuesses.get(1).equalsIgnoreCase(map.answer[1]) &&
+            finalGuesses.get(2).equalsIgnoreCase(map.answer[2])) {
+                correct = true;
+        }
+        return correct;
+    }
+
     public Player cloneName() {
-        Player temp = new Player(name);
+        Player temp = new Player(name, map);
         return temp;
     }
 
     @Override
     public Player clone() { //clones player object
-        Player temp = new Player(name);
-/*
-        temp.currentRoom = currentRoom;
+        Player temp = new Player(name, map);
         for (int i = 0; i < 3; i++) {
             temp.hand.add(hand.get(i));
         }
-*/
-        for (int i = 0; i < guesses.size(); i++) {
-            temp.guesses.add(guesses.get(i));
-        }
         temp.nextPlayer = this.nextPlayer;
-    //  card = new Scorecard();
-        temp.card = new Scorecard();
-    //  temp.card = card.clone();
+        temp.card = new Scorecard(temp);
         return temp;
     }
 
@@ -157,15 +151,17 @@ public class Player {
     }
     
     public class Scorecard {
-        private HashMap<String, String> people = new HashMap<String, String>();
-        private HashMap<String, String> weapons = new HashMap<String, String>();
-        private HashMap<String, String> rooms = new HashMap<String, String>();
-        private ArrayList<Player> players = new ArrayList<Player>();
+        private HashMap<String, String> people = new HashMap<>();
+        private HashMap<String, String> weapons = new HashMap<>();
+        private HashMap<String, String> rooms = new HashMap<>();
+        private ArrayList<Player> players = new ArrayList<>();
+        private String[] peopleCards = new String[6];
         private String[] weaponCards = {"Candlestick", "Knife", "Lead Pipe", "Pistol", "Rope", "Wrench"};
         private String[] roomCards = {"Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"};
+        private Player currentPlayer; 
 
-
-        public Scorecard() { //Constructor that fills hashmaps
+        public Scorecard(Player p) { //Constructor that fills hashmaps
+            currentPlayer = p;
             for (int w = 0; w < 6; w++) {
                 weapons.put(weaponCards[w], " ");
             }
@@ -173,27 +169,22 @@ public class Player {
                 rooms.put(roomCards[r], " ");
             }
         }
-        public int checkCard(String hash, String s) {
-            for (int i =0; i < 6; i ++) {
-                if (checkCardSpecific(i, hash, s)) return i;
-            }
-            return -1; //placeholder
-        }
-        public boolean checkCardSpecific(int playerNum, String hash, String s) {
+
+        public boolean checkCard(int playerNum, String hash, String s) {
             if (hash.equalsIgnoreCase("People")) {
-                if (players.get(playerNum).card.getPeople().get(s).equals("X")) {
+                if (players.get(playerNum).card.getPeople(s).equals("X")) {
                     return true;
                 } else {
                     return false;
                 }
             } else if (hash.equalsIgnoreCase("Weapon")) {
-                if (players.get(playerNum).card.getWeapons().get(s).equals("X")) {
+                if (players.get(playerNum).card.getWeapons(s).equals("X")) {
                     return true;
                 } else {
                     return false;
                 }
             } else {
-                if (players.get(playerNum).card.getRooms().get(s).equals("X")) {
+                if (players.get(playerNum).card.getRooms(s).equals("X")) {
                     return true;
                 } else {
                     return false;
@@ -202,113 +193,227 @@ public class Player {
         }
 
         public void update() { //Called only one time once all players are created in Map
-//          players = new ArrayList<Player>();
-            Player tempPlayer = nextPlayer.clone();
-            people.put(name, " "); // why is this necessarily a " "
+            System.out.println(currentPlayer.hand);
+            System.out.println(currentPlayer.hand);
+            currentPlayer.printHand();
 
-            for (int p = 0; p < 5; p++) {
-                people.put(tempPlayer.name, " ");
-                players.add(tempPlayer);
-                tempPlayer = tempPlayer.nextPlayer.clone();
+            Player tempNext = currentPlayer;
+            Player playerClone = tempNext.clone();
+            for (int p = 0; p < 6; p++) {
+                players.add(playerClone);
+                //players.get(p).hand = playerClone.hand;
+                //System.out.println("adding" + playerClone);
+                //System.out.println(players);
+                tempNext = tempNext.nextPlayer;
+                playerClone = tempNext.clone();
             }
-            players.add(0, tempPlayer.nextPlayer.clone());
+            for (int p = 0; p < 6; p++) {
+                for (int h = 0; h < 6; h++) {
+                    //System.out.println(players);
+                    players.get(p).card.setPeople(players.get(h).name, " ");
+                }
+            }
             boolean room;
-            for (int i = 0; i < 3; i++) {
+            for (int c = 0; c < 3; c++) {
                 room = true;
-                for (int j = 0; j < 6; j++) {
-                    // System.out.println("i: " + i + " j: " + j);
-                    System.out.println(hand.get(i));
-                    System.out.println(players.get(j).name);
-                    if (hand.get(i).equals(players.get(j).name)) {
-                        people.put(players.get(j).name, "X");
+                for (int x = 0; x < 6; x++) {
+                    System.out.println(players.get(0).hand);
+                    if (players.get(0).hand.get(c).equals(weaponCards[x])) {
+                        players.get(0).card.setWeapons(weaponCards[x], "X");
                         room = false;
-                    } else if (hand.get(i).equals(weaponCards[j])) {
-                        weapons.put(weaponCards[j], "X");
+                    } else if (players.get(0).hand.get(c).equals(players.get(x).name)) {
+                        players.get(0).card.setPeople(players.get(x).name, "X");
                         room = false;
                     }
                 }
                 if (room) {
-                    rooms.put(hand.get(i), "X");
+                    players.get(0).card.setRooms(players.get(0).hand.get(c), "X");
+                }
+            }
+
+            //fills peopleCards
+            for (int p = 0; p < 6; p++) {
+                peopleCards[p] = players.get(p).name;
+            }
+
+            //set O's for cards you know you don't have
+            for (int p = 0; p < 6; p++) {
+                if (players.get(0).card.getPeople(players.get(p).name).equals(" ")) {
+                    players.get(0).card.setPeople(players.get(p).name, "O");
+                } else {
+                    for (int oP = 1; oP < 6; oP++) { //oP = other Players
+                        players.get(oP).card.setPeople(peopleCards[p], "O");
+                    }
+                }
+            }
+            for (int w = 0; w < 6; w++) {
+                if (players.get(0).card.getWeapons(weaponCards[w]).equals(" ")) {
+                    players.get(0).card.setWeapons(weaponCards[w], "O");
+                } else {
+                    for (int oW = 1; oW < 6; oW++) { //oW = other Weapons
+                        players.get(oW).card.setPeople(weaponCards[w], "O");
+                    }
+                }
+            }
+            for (int r = 0; r < 9; r++) {
+                if (players.get(0).card.getRooms(roomCards[r]).equals(" ")) {
+                    players.get(0).card.setRooms(roomCards[r], "O");
+                } else {
+                    for (int oR = 1; oR < 6; oR++) { //oR = other Rooms
+                        players.get(oR).card.setPeople(roomCards[r], "O");
+                    }
                 }
             }
         }
 
-        public Scorecard clone() { //clones Scorecard object
-            Scorecard temp = new Scorecard();
-            for (int i = 0; i < 6; i++) {
-                temp.setPlayers(i, players.get(i));
-                temp.people.put(players.get(i).name, people.get(players.get(i).name));
-                temp.weapons.put(weaponCards[i], weapons.get(weaponCards[i]));
-            }
-            for (int i = 0; i < 9; i++) {
-                temp.rooms.put(roomCards[i], rooms.get(roomCards[i]));
-            }
-            return temp;
-        }
-
                 //Getters and Setters Below
-        public HashMap<String, String> getPeople() {
-            return people;
+        public String getPeople(String key) {
+            return people.get(key);
         }
 
         public void setPeople(String key, String value) {
             people.put(key, value);
         }
 
-        public HashMap<String, String> getWeapons() {
-            return weapons;
+        public String getWeapons(String key) {
+            return weapons.get(key);
+        }
+
+        public String[] getWeapons() {
+            return weaponCards;
         }
 
         public void setWeapons(String key, String value) {
             weapons.put(key, value);
         }
 
-        public HashMap<String, String> getRooms() {
-            return rooms;
+        public String getRooms(String key) {
+            return rooms.get(key);
+        }
+
+        public String[] getRooms() {
+            return roomCards;
         }
 
         public void setRooms(String key, String value) {
             rooms.put(key, value);
         }
         
-        public ArrayList<Player> getPlayers() {
-            return players;
+        public Player getPlayers(int i) {
+            return players.get(i);
+        }
+
+        public String[] getPeople() {
+            return peopleCards;
         }
 
         public void setPlayers(int index, Player p) {
             players.add(index, p);
         }
 
+        public String fillSpace(int charNum, String name) {
+            String output = "";
+            if ((charNum - name.length()) % 2 == 0) {
+                for (int s = 0; s < (charNum - name.length()) / 2; s++) {
+                    output += " ";
+                }
+                output += name;
+                for (int s = 0; s < (charNum - name.length()) / 2; s++) {
+                    output += " ";
+                }
+            } else {
+                for (int s = 0; s < (charNum - name.length()) / 2; s++) {
+                    output += " ";
+                }
+                output += name;
+                for (int s = 0; s < ((charNum - name.length()) / 2) + 1; s++) {
+                    output += " ";
+                }
+            }
+            return output;
+        }
+
         public String toString() {
-            String display = ""; //1st Column: Subject | 2nd Column: Own Cards | 3rd Column: 1st Player in Queue | 4th Column: 2nd Player in Queue | 5th Column: 3rd Player Queue | 6th Column: 4th Player in Queue | 7th Column: 5th Players in Queue
-            display = "________________________________________________________________________________\r\n"
-                + "|                                   | " + players.get(0).name + " | " + players.get(1).name + " | " + players.get(2).name + " | " + players.get(3).name + " | " + players.get(4).name + " | " + players.get(5).name + " |\r\n"
-                + "| " + players.get(0).name + " | " + people.get(players.get(0).name) + " | " + players.get(1).card.getPeople().get(players.get(0).name) + " | " + players.get(2).card.getPeople().get(players.get(0).name) + " | " + players.get(3).card.getPeople().get(players.get(0).name) + " | " + players.get(4).card.getPeople().get(players.get(0).name) + " | " + players.get(5).card.getPeople().get(players.get(0).name) + " |\r\n"
-                + "| " + players.get(1).name + " | " + people.get(players.get(1).name) + " | " + players.get(1).card.getPeople().get(players.get(1).name) + " | " + players.get(2).card.getPeople().get(players.get(1).name) + " | " + players.get(3).card.getPeople().get(players.get(1).name) + " | " + players.get(4).card.getPeople().get(players.get(1).name) + " | " + players.get(5).card.getPeople().get(players.get(1).name) + " |\r\n"
-                + "| " + players.get(2).name + " | " + people.get(players.get(2).name) + " | " + players.get(1).card.getPeople().get(players.get(2).name) + " | " + players.get(2).card.getPeople().get(players.get(2).name) + " | " + players.get(3).card.getPeople().get(players.get(2).name) + " | " + players.get(4).card.getPeople().get(players.get(2).name) + " | " + players.get(5).card.getPeople().get(players.get(2).name) + " |\r\n"
-                + "| " + players.get(3).name + " | " + people.get(players.get(3).name) + " | " + players.get(1).card.getPeople().get(players.get(3).name) + " | " + players.get(2).card.getPeople().get(players.get(3).name) + " | " + players.get(3).card.getPeople().get(players.get(3).name) + " | " + players.get(4).card.getPeople().get(players.get(3).name) + " | " + players.get(5).card.getPeople().get(players.get(3).name) + " |\r\n"
-                + "| " + players.get(4).name + " | " + people.get(players.get(4).name) + " | " + players.get(1).card.getPeople().get(players.get(4).name) + " | " + players.get(2).card.getPeople().get(players.get(4).name) + " | " + players.get(3).card.getPeople().get(players.get(4).name) + " | " + players.get(4).card.getPeople().get(players.get(4).name) + " | " + players.get(5).card.getPeople().get(players.get(4).name) + " |\r\n"
-                + "| " + players.get(5).name + " | " + people.get(players.get(5).name) + " | " + players.get(1).card.getPeople().get(players.get(5).name) + " | " + players.get(2).card.getPeople().get(players.get(5).name) + " | " + players.get(3).card.getPeople().get(players.get(5).name) + " | " + players.get(4).card.getPeople().get(players.get(5).name) + " | " + players.get(5).card.getPeople().get(players.get(5).name) + " |\r\n"
-                + "________________________________________________________________________________\r\n"
-                + "| Candlestick   | " + weapons.get("Candlestick") + " | " + players.get(1).card.getWeapons().get("Candlestick") + " | " + players.get(2).card.getWeapons().get("Candlestick") + " | " + players.get(3).card.getWeapons().get("Candlestick") + " | " + players.get(4).card.getWeapons().get("Candlestick") + " | " + players.get(5).card.getWeapons().get("Candlestick") + " |\r\n"
-                + "| Knife         | " + weapons.get("Knife") + " | " + players.get(1).card.getWeapons().get("Knife") + " | " + players.get(2).card.getWeapons().get("Knife") + " | " + players.get(3).card.getWeapons().get("Knife") + " | " + players.get(4).card.getWeapons().get("Knife") + " | " + players.get(5).card.getWeapons().get("Knife") + " |\r\n"
-                + "| Lead Pipe     | " + weapons.get("Lead Pipe") + " | " + players.get(1).card.getWeapons().get("Lead Pipe") + " | " + players.get(2).card.getWeapons().get("Lead Pipe") + " | " + players.get(3).card.getWeapons().get("Lead Pipe") + " | " + players.get(4).card.getWeapons().get("Lead Pipe") + " | " + players.get(5).card.getWeapons().get("Lead Pipe") + " |\r\n"
-                + "| Pistol        | " + weapons.get("Pistol") + " | " + players.get(1).card.getWeapons().get("Pistol") + " | " + players.get(2).card.getWeapons().get("Pistol") + " | " + players.get(3).card.getWeapons().get("Pistol") + " | " + players.get(4).card.getWeapons().get("Pistol") + " | " + players.get(5).card.getWeapons().get("Pistol") + " |\r\n"
-                + "| Rope          | " + weapons.get("Rope") + " | " + players.get(1).card.getWeapons().get("Rope") + " | " + players.get(2).card.getWeapons().get("Rope") + " | " + players.get(3).card.getWeapons().get("Rope") + " | " + players.get(4).card.getWeapons().get("Rope") + " | " + players.get(5).card.getWeapons().get("Rope") + " |\r\n"
-                + "| Wrench        | " + weapons.get("Wrench") + " | " + players.get(1).card.getWeapons().get("Wrench") + " | " + players.get(2).card.getWeapons().get("Wrench") + " | " + players.get(3).card.getWeapons().get("Wrench") + " | " + players.get(4).card.getWeapons().get("Wrench") + " | " + players.get(5).card.getWeapons().get("Wrench") + " |\r\n"
-                + "________________________________________________________________________________\r\n"
-                + "| Ball Room     | " + rooms.get("Ball Room") + " | " + players.get(1).card.getRooms().get("Ball Room") + " | " + players.get(2).card.getRooms().get("Ball Room") + " | " + players.get(3).card.getRooms().get("Ball Room") + " | " + players.get(4).card.getRooms().get("Ball Room") + " | " + players.get(5).card.getRooms().get("Ball Room") + " |\r\n"
-                + "| Billiard Room | " + rooms.get("Billiard Room") + " | " + players.get(1).card.getRooms().get("Billiard Room") + " | " + players.get(2).card.getRooms().get("Billiard Room") + " | " + players.get(3).card.getRooms().get("Billiard Room") + " | " + players.get(4).card.getRooms().get("Billiard Room") + " | " + players.get(5).card.getRooms().get("Billiard Room") + " |\r\n"
-                + "| Conservatory  | " + rooms.get("Conservatory") + " | " + players.get(1).card.getRooms().get("Conservatory") + " | " + players.get(2).card.getRooms().get("Conservatory") + " | " + players.get(3).card.getRooms().get("Conservatory") + " | " + players.get(4).card.getRooms().get("Conservatory") + " | " + players.get(5).card.getRooms().get("Conservatory") + " |\r\n"
-                + "| Dining Room   | " + rooms.get("Dining Room") + " | " + players.get(1).card.getRooms().get("Dining Room") + " | " + players.get(2).card.getRooms().get("Dining Room") + " | " + players.get(3).card.getRooms().get("Dining Room") + " | " + players.get(4).card.getRooms().get("Dining Room") + " | " + players.get(5).card.getRooms().get("Dining Room") + " |\r\n"
-                + "| Hall          | " + rooms.get("Hall") + " | " + players.get(1).card.getRooms().get("Hall") + " | " + players.get(2).card.getRooms().get("Hall") + " | " + players.get(3).card.getRooms().get("Hall") + " | " + players.get(4).card.getRooms().get("Hall") + " | " + players.get(5).card.getRooms().get("Hall") + " |\r\n"
-                + "| Kitchen       | " + rooms.get("Kitchen") + " | " + players.get(1).card.getRooms().get("Kitchen") + " | " + players.get(2).card.getRooms().get("Kitchen") + " | " + players.get(3).card.getRooms().get("Kitchen") + " | " + players.get(4).card.getRooms().get("Kitchen") + " | " + players.get(5).card.getRooms().get("Kitchen") + " |\r\n"
-                + "| Library       | " + rooms.get("Library") + " | " + players.get(1).card.getRooms().get("Library") + " | " + players.get(2).card.getRooms().get("Library") + " | " + players.get(3).card.getRooms().get("Library") + " | " + players.get(4).card.getRooms().get("Library") + " | " + players.get(5).card.getRooms().get("Library") + " |\r\n"
-                + "| Lounge        | " + rooms.get("Lounge") + " | " + players.get(1).card.getRooms().get("Lounge") + " | " + players.get(2).card.getRooms().get("Lounge") + " | " + players.get(3).card.getRooms().get("Lounge") + " | " + players.get(4).card.getRooms().get("Lounge") + " | " + players.get(5).card.getRooms().get("Lounge") + " |\r\n"
-                + "| Study         | " + rooms.get("Study") + " | " + players.get(1).card.getRooms().get("Study") + " | " + players.get(2).card.getRooms().get("Study") + " | " + players.get(3).card.getRooms().get("Study") + " | " + players.get(4).card.getRooms().get("Study") + " | " + players.get(5).card.getRooms().get("Study") + " |\r\n"
-                + "________________________________________________________________________________\r\n";
+            String display = " ";
+
+            //Divider
+            for (int i = 0; i < 111; i++) {
+                display += "-";
+            }
+
+            //Character Headers
+            display += "\r\n|";
+            for (int s = 0; s < 15; s++) {
+                display += " ";
+            }
+            display += "|";
+            for (int i = 0; i < 6; i++) {
+                display += this.fillSpace(15, players.get(i).name) + "|";
+            }
+
+            //Characters
+            display += "\r\n";
+            for (int i = 0; i < 6; i++) {
+                display += "| ";
+                display += players.get(i).name;
+                for (int j = 0; j < 14 - players.get(i).name.length(); j++) {
+                    display += " ";
+                }
+                display += "|";
+                for (int p = 0; p < 6; p++) {
+                    display += this.fillSpace(15, players.get(p).card.getPeople(players.get(i).name)) + "|";
+                }
+                display += "\r\n";
+            }
+
+            //Divider
+            display += " ";
+            for (int i = 0; i < 111; i++) {
+                display += "-";
+            }
+
+            //Weapons
+            display += "\r\n";
+            for (int i = 0; i < 6; i++) {
+                display += "| ";
+                display += weaponCards[i];
+                for (int j = 0; j < 14 - weaponCards[i].length(); j++) {
+                    display += " ";
+                }
+                display += "|";
+                for (int w = 0; w < 6; w++) {
+                    display += this.fillSpace(15, players.get(w).card.getWeapons(weaponCards[i])) + "|";
+                }
+                display += "\r\n";
+            }
+
+            //Divider
+            display += " ";
+            for (int i = 0; i < 111; i++) {
+                display += "-";
+            }
+
+            //Rooms
+            display += "\r\n";
+            for (int i = 0; i < 9; i++) {
+                display += "| ";
+                display += roomCards[i];
+                for (int j = 0; j < 14 - roomCards[i].length(); j++) {
+                    display += " ";
+                }
+                display += "|";
+                for (int w = 0; w < 6; w++) {
+                    display += this.fillSpace(15, players.get(w).card.getRooms(roomCards[i])) + "|";
+                }
+                display += "\r\n";
+            }
+
+            //Divider
+            display += " ";
+            for (int i = 0; i < 111; i++) {
+                display += "-";
+            }
             return display;
         }
     }
-
 }
