@@ -106,7 +106,7 @@ public class map {
 
         for (int i = 0; i < 6 - nplayers; i ++) {
             String npcname = npcnames.remove((int) Math.random()* (npcnames.size()));
-            Player temp = new Player(npcname, this);
+            Player temp = new NPC(npcname, this);
             System.out.println("NPC " + i + " is " + temp + "!");
             players.add(temp.clone());
             players.get(nplayers + i).hand = new ArrayList<String>();
@@ -146,7 +146,7 @@ public class map {
     }
 
     public boolean movenpc (int player, int roll) {
-        Player npc = players.get(player);
+        NPC npc = (NPC) players.get(player);
         npc.pathfindMain(roll);
         for (int i = 0; i < roll; i ++) {
             char currmove = npc.currPath.remove(0);
@@ -270,7 +270,7 @@ public class map {
         return false;
     }
 
-    public boolean checkCollisionNPC(Player npc, int x, int y) {
+    public boolean checkCollisionNPC(NPC npc, int x, int y) {
         return switch (map[x][y]) {
             case 'x' -> true;
             case 'd' -> {
@@ -281,7 +281,7 @@ public class map {
         };
     }
 
-    public void enterRoomNPC(Player p, int x, int y) {
+    public void enterRoomNPC(NPC p, int x, int y) {
         Room roomtoenter = doors.get(new coordinate(x, y));
         p.currentRoom = roomtoenter;
         try {
