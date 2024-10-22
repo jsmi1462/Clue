@@ -34,6 +34,7 @@ public class NPC extends Player {
     }
 
     public int findPath(int moves, Room room) {
+        System.out.println("Finding path to room " + room);
         currPath = new ArrayList<Character>();
         ArrayList<map.coordinate> targetCoords = new ArrayList<>();
         for (Map.Entry<map.coordinate, Room> entry : map.doors.entrySet()) {
@@ -47,6 +48,7 @@ public class NPC extends Player {
             int targetx = targetCoord.x();
             int targety = targetCoord.y();
             ArrayList<int[]> forbfs = new ArrayList<int[]>(); // argh
+            System.out.println("Trying path to " + targetx + "," + targety);
             String path = BFS(0, "", targetx, targety, xPos, yPos, forbfs);
             if (path.length() < minmoves) {
                 minmoves = path.length();
@@ -73,6 +75,7 @@ public class NPC extends Player {
             }
         }
         currTarget = bestroom;
+        System.out.println("The target room is " + bestroom);
         findPath(moves, bestroom);
     }
     public int calcRoomValue(int moves, Room room) {
@@ -80,6 +83,7 @@ public class NPC extends Player {
         int distance = findPath(moves, room) - moves;
         distance = (int) (distance + 6) / 7;
         thisvalue -= (distance * 3);
+        System.out.println("Room " + room + " has value "  + moves);
         // if room unknown, done
         // if room = yours, 100 if ans, -inf/2 if no ans
         // if room = next in line, -infty, etc.
@@ -162,23 +166,43 @@ public class NPC extends Player {
         q.add(new Triplet<Integer, String, int[]>(length, pathsofar, new int[]{currx, curry})); // BFS queue keeping track of path and integer
         while (!q.isEmpty()) {
             Triplet<Integer, String, int[]> curr = q.poll();
+            
+            System.out.println("NPC testing moving to " + curr.c);
             visited.add(curr.c);
             if (curr.c.equals(new int[]{targetx, targety})) {
                 return curr.b;
             }
             char[] directions = {'w', 'a', 's', 'd'};
+            int[] newloc;
             for (char direction: directions) {
+                
                 if (checkMoveValidity(currx, curry, direction))
                 {
                     switch (direction) {
                         case ('w'):
-                            q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0] - 1, curr.c[1]}));
+                            newloc = new int[]{curr.c[0] - 1, curr.c[1]};
+                            if (visited.indexOf(newloc) == -1) {
+                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            }
+                            break;
                         case ('a'):
-                            q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0], curr.c[1] - 1}));
+                            newloc = new int[]{curr.c[0], curr.c[1] - 1};
+                            if (visited.indexOf(newloc) == -1) {
+                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            }
+                            break;
                         case ('s'):
-                            q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0] + 1, curr.c[1]}));
+                            newloc = new int[]{curr.c[0] + 1, curr.c[1]};
+                            if (visited.indexOf(newloc) == -1) {
+                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            }
+                            break;
                         case ('d'):
-                            q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, new int[]{curr.c[0], curr.c[1] + 1}));
+                            newloc = new int[]{curr.c[0], curr.c[1] + 1};
+                            if (visited.indexOf(newloc) == -1) {
+                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            }
+                            break;
                     }
                 }
             } 
