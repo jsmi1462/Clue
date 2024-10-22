@@ -2,20 +2,10 @@ import java.util.*;
 
 
 public class NPC extends Player {
-    public Scanner input = new Scanner(System.in);
     public int roll;
-    public int xPos;
-    public int yPos;
-    public Room currentRoom;
-    public String name;
-    public ArrayList<String> hand;
-    public ArrayList<String> guesses;
-    public Player nextPlayer;
     public map currMap;
     public Room currTarget;
     public ArrayList<Character> currPath;
-    public boolean isNPC;
-    public map map;
 
     public NPC (String n, map m) {
         currentRoom = null;

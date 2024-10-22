@@ -14,9 +14,7 @@ public class Player {
     public map map;
 
     public Player() {
-
     }
-
     public Player(String n, map m) {
         currentRoom = null;
         name = n;
@@ -169,8 +167,16 @@ public class Player {
                 rooms.put(roomCards[r], " ");
             }
         }
+        public int checkCard(String hash, String s) {
+            for (int i = 0; i < 6; i ++) {
+                if (checkCardSpecific(i, hash, s)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
 
-        public boolean checkCard(int playerNum, String hash, String s) {
+        public boolean checkCardSpecific(int playerNum, String hash, String s) {
             if (hash.equalsIgnoreCase("People")) {
                 if (players.get(playerNum).card.getPeople(s).equals("X")) {
                     return true;
