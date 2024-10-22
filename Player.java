@@ -12,10 +12,14 @@ public class Player {
     public Scorecard card;
     public boolean isNPC;
     public map map;
+    public int absoluteindex;
 
     public Player() {
+        
     }
-    public Player(String n, map m) {
+
+    public Player(String n, map m, int absindex) {
+        absoluteindex = absindex;
         currentRoom = null;
         name = n;
         map = m;
@@ -129,13 +133,13 @@ public class Player {
     }
 
     public Player cloneName() {
-        Player temp = new Player(name, map);
+        Player temp = new Player(name, map, absoluteindex);
         return temp;
     }
 
     @Override
     public Player clone() { //clones player object
-        Player temp = new Player(name, map);
+        Player temp = new Player(name, map, absoluteindex);
         for (int i = 0; i < 3; i++) {
             temp.hand.add(hand.get(i));
         }
@@ -199,23 +203,15 @@ public class Player {
         }
 
         public void update() { //Called only one time once all players are created in Map
-            System.out.println(currentPlayer.hand);
-            System.out.println(currentPlayer.hand);
-            currentPlayer.printHand();
-
             Player tempNext = currentPlayer;
             Player playerClone = tempNext.clone();
             for (int p = 0; p < 6; p++) {
                 players.add(playerClone);
-                //players.get(p).hand = playerClone.hand;
-                //System.out.println("adding" + playerClone);
-                //System.out.println(players);
                 tempNext = tempNext.nextPlayer;
                 playerClone = tempNext.clone();
             }
             for (int p = 0; p < 6; p++) {
                 for (int h = 0; h < 6; h++) {
-                    //System.out.println(players);
                     players.get(p).card.setPeople(players.get(h).name, " ");
                 }
             }

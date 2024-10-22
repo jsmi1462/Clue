@@ -3,17 +3,19 @@ import java.util.*;
 
 public class NPC extends Player {
     public int roll;
-    public map currMap;
     public Room currTarget;
     public ArrayList<Character> currPath;
+    public ArrayList<ArrayList<String>> revealedcards; 
 
-    public NPC (String n, map m) {
+    public NPC (String n, map m, int absindex) {
+        absoluteindex = absindex;
         currentRoom = null;
         name = n;
         map = m;
         isNPC = true;
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
+        revealedcards = new ArrayList<ArrayList<String>>();
 
     }
 
@@ -22,9 +24,18 @@ public class NPC extends Player {
         card = new Scorecard(this);
     }
 
+
+    public String revealcard(int player, String... strings) 
+    {
+        String cardtoreveal = "";
+        revealedcards.get(player).add(cardtoreveal);
+        System.out.println("NPC " + name + " revealed name " + cardtoreveal + " to you.");
+        return cardtoreveal;
+    }
+
     public int findPath(int moves, Room room) {
         ArrayList<map.coordinate> targetCoords = new ArrayList<>();
-        for (Map.Entry<map.coordinate, Room> entry : currMap.doors.entrySet()) {
+        for (Map.Entry<map.coordinate, Room> entry : map.doors.entrySet()) {
             if (entry.getValue() == room) {
                 targetCoords.add(entry.getKey());
             }
@@ -49,10 +60,10 @@ public class NPC extends Player {
         return currPath.size();
     }
     public void pathfindMain(int moves) {
-        int bestvalue = calcRoomValue(moves, currMap.rooms.get(0));
+        int bestvalue = calcRoomValue(moves, map.rooms.get(0));
         int infinity = 1000000;
-        Room bestroom = currMap.rooms.get(0);
-        for (Room room: currMap.rooms) {
+        Room bestroom = map.rooms.get(0);
+        for (Room room: map.rooms) {
             int thisvalue = calcRoomValue(moves, room);
             if (thisvalue > bestvalue) {
                 bestvalue = thisvalue;
@@ -106,7 +117,7 @@ public class NPC extends Player {
     public String findbestperson() {
         ArrayList<String> names = new ArrayList<>();
 
-        for (Player p: currMap.players) {
+        for (Player p: map.players) {
             names.add(p.name);
         }
 
@@ -181,23 +192,23 @@ public class NPC extends Player {
                 if (currx == 0) {
                     return false;
                 }
-                return !currMap.checkCollisionNPC(this, currx - 1, curry);
+                return !map.checkCollisionNPC(this, currx - 1, curry);
             case ('a'):
                 if (curry == 0) {
                     return false;
                 }
-                return !currMap.checkCollisionNPC(this, currx, curry - 1);
+                return !map.checkCollisionNPC(this, currx, curry - 1);
             case ('s'):
                 if (currx == 24) {
                     return false;
                 }
-                return !currMap.checkCollisionNPC(this, currx + 1, curry);
+                return !map.checkCollisionNPC(this, currx + 1, curry);
 
             case ('d'):
                 if (curry == 23) {
                     return false;
                 }
-                return !currMap.checkCollisionNPC(this, currx, curry + 1);      
+                return !map.checkCollisionNPC(this, currx, curry + 1);      
         }
         return false;
     }
@@ -210,7 +221,7 @@ public class NPC extends Player {
     @Override
     public NPC clone() {
         System.out.println("Cloning NPC with hand " + this.hand);
-        NPC n = new NPC(this.name, map);
+        NPC n = new NPC(this.name, map, absoluteindex);
         n.hand = this.hand;
         n.guesses = guesses;
         n.card = card;
