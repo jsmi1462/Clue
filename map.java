@@ -147,6 +147,7 @@ public class map {
 
     public boolean movenpc (int player, int roll) {
         NPC npc = (NPC) players.get(player);
+        System.out.println("NPC " + npc + " is finding a path.");
         npc.pathfindMain(roll);
         for (int i = 0; i < roll; i ++) {
             char currmove = npc.currPath.remove(0);

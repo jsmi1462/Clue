@@ -34,6 +34,7 @@ public class NPC extends Player {
     }
 
     public int findPath(int moves, Room room) {
+        currPath = new ArrayList<Character>();
         ArrayList<map.coordinate> targetCoords = new ArrayList<>();
         for (Map.Entry<map.coordinate, Room> entry : map.doors.entrySet()) {
             if (entry.getValue() == room) {
@@ -54,6 +55,7 @@ public class NPC extends Player {
         }
         ArrayList<int[]> forbfs = new ArrayList<int[]>(); // argh
         String bestpath = BFS(0, "", mincoords[0], mincoords[1], xPos, yPos, forbfs);
+        System.out.println("The best path has been determined to be " + bestpath);
         for (int i = 0; i < bestpath.length(); i++) {
             currPath.add(bestpath.charAt(i));
         }
