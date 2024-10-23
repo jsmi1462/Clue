@@ -166,8 +166,8 @@ public class NPC extends Player {
         q.add(new Triplet<Integer, String, int[]>(length, pathsofar, new int[]{currx, curry})); // BFS queue keeping track of path and integer
         while (!q.isEmpty()) {
             Triplet<Integer, String, int[]> curr = q.poll();
-            
-            System.out.println("NPC testing moving to " + curr.c);
+            if (curr.c.equals(new int[]{currx, curry})) continue;
+            System.out.println("NPC testing moving to " + curr.c[0] + "," + curr.c[1]);
             visited.add(curr.c);
             if (curr.c.equals(new int[]{targetx, targety})) {
                 return curr.b;
@@ -176,7 +176,7 @@ public class NPC extends Player {
             int[] newloc;
             for (char direction: directions) {
                 
-                if (checkMoveValidity(currx, curry, direction))
+                if (checkMoveValidity(curr.c[0], curr.c[1], direction))
                 {
                     switch (direction) {
                         case ('w'):
