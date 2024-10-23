@@ -47,15 +47,16 @@ public class NPC extends Player {
         for (map.coordinate targetCoord: targetCoords) {
             int targetx = targetCoord.x();
             int targety = targetCoord.y();
-            ArrayList<int[]> forbfs = new ArrayList<int[]>(); // argh
+            ArrayList<coordinate> forbfs = new ArrayList<>(); // argh
             System.out.println("Trying path to " + targetx + "," + targety);
             String path = BFS(0, "", targetx, targety, xPos, yPos, forbfs);
+            System.out.println("Found path " + path + " to " + targetx + "," + targety);
             if (path.length() < minmoves) {
                 minmoves = path.length();
                 mincoords = new int[] {targetCoord.x(), targetCoord.y()};
             }
         }
-        ArrayList<int[]> forbfs = new ArrayList<int[]>(); // argh
+        ArrayList<coordinate> forbfs = new ArrayList<>(); // argh
         String bestpath = BFS(0, "", mincoords[0], mincoords[1], xPos, yPos, forbfs);
         System.out.println("The best path has been determined to be " + bestpath);
         for (int i = 0; i < bestpath.length(); i++) {
@@ -63,6 +64,7 @@ public class NPC extends Player {
         }
         return currPath.size();
     }
+
     public void pathfindMain(int moves) {
         int bestvalue = calcRoomValue(moves, map.rooms.get(0));
         int infinity = 1000000;
@@ -161,46 +163,56 @@ public class NPC extends Player {
           Room guessedRoom = currTarget; // note to self - wtf is this
            
     }
-    public String BFS(Integer length, String pathsofar, int targetx, int targety, int currx, int curry, ArrayList<int[]> visited) {
-        Queue<Triplet<Integer, String, int[]>> q = new LinkedList<Triplet<Integer, String, int[]>>(); // hate me for this if you want, i can't find another way without changing too many map methods........
-        q.add(new Triplet<Integer, String, int[]>(length, pathsofar, new int[]{currx, curry})); // BFS queue keeping track of path and integer
+
+    public boolean checkifinarray(ArrayList<coordinate> visited, coordinate c) {
+        for (int i =0; i < visited.size(); i ++) {
+            if (visited.get(i).equals(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public String BFS(Integer length, String pathsofar, int targetx, int targety, int currx, int curry, ArrayList<coordinate> visited) {
+        Queue<Triplet<Integer, String, coordinate>> q = new LinkedList<Triplet<Integer, String, coordinate>>(); // hate me for this if you want, i can't find another way without changing too many map methods........
+        q.add(new Triplet<Integer, String, coordinate>(length, pathsofar, new coordinate(currx, curry))); // BFS queue keeping track of path and integer
         while (!q.isEmpty()) {
-            Triplet<Integer, String, int[]> curr = q.poll();
-            if (curr.c.equals(new int[]{currx, curry})) continue;
-            System.out.println("NPC testing moving to " + curr.c[0] + "," + curr.c[1]);
+            Triplet<Integer, String, coordinate> curr = q.poll();
+            System.out.println("NPC testing moving to " + curr.c.x() + "," + curr.c.y());
             visited.add(curr.c);
-            if (curr.c.equals(new int[]{targetx, targety})) {
+
+            if (curr.c.equals(new coordinate(targetx, targety))) {
                 return curr.b;
             }
+
             char[] directions = {'w', 'a', 's', 'd'};
-            int[] newloc;
+            coordinate newloc;
             for (char direction: directions) {
                 
-                if (checkMoveValidity(curr.c[0], curr.c[1], direction))
+                if (checkMoveValidity(curr.c.x(), curr.c.y(), direction))
                 {
                     switch (direction) {
                         case ('w'):
-                            newloc = new int[]{curr.c[0] - 1, curr.c[1]};
-                            if (visited.indexOf(newloc) == -1) {
-                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            newloc = new coordinate(curr.c.x() - 1, curr.c.y());
+                            if (checkifinarray(visited, newloc)) {
+                                q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('a'):
-                            newloc = new int[]{curr.c[0], curr.c[1] - 1};
-                            if (visited.indexOf(newloc) == -1) {
-                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            newloc = new coordinate(curr.c.x(), curr.c.y() - 1);
+                            if (checkifinarray(visited, newloc)) {
+                                q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('s'):
-                            newloc = new int[]{curr.c[0] + 1, curr.c[1]};
-                            if (visited.indexOf(newloc) == -1) {
-                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            newloc = new coordinate(curr.c.x() + 1, curr.c.y());
+                            if (checkifinarray(visited, newloc)) {
+                                q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('d'):
-                            newloc = new int[]{curr.c[0], curr.c[1] + 1};
-                            if (visited.indexOf(newloc) == -1) {
-                                q.add(new Triplet<Integer, String, int[]>(curr.a + 1, curr.b + direction, newloc));
+                            newloc = new coordinate(curr.c.x(), curr.c.y() + 1);
+                            if (checkifinarray(visited, newloc)) {
+                                q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                     }
@@ -255,6 +267,23 @@ public class NPC extends Player {
     }
     public String toString() {
         return this.name;
+    }
+
+
+    public record coordinate(int x, int y) {
+
+        @Override 
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            else if (this.getClass() != o.getClass()) return false;
+            coordinate o2 = (coordinate) o;
+            return (this.x == o2.x) && (this.y == o2.y);
+        }
+
+        @Override
+        public int hashCode() {
+            return 25 * x + y;
+        }
     }
 
     private record Triplet<A, B, C>(A a, B b, C c) {}
