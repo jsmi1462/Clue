@@ -68,7 +68,7 @@ public class map {
         "Ball Room", "Kitchen", "Conservatory"};
         String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billard Room", "Billard Room",
             "Ball Room", "Ball Room", "Kitchen", "Conservatory", "Ball Room", "Ball Room"};
-        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,11},{6,12},{8,6},{9,17},{10,3},{12,1},{15,5},{17,10},{17,15},{18,19},{19,4}, {19,8},{19,15}};
+        int[][] doorCoors = {{3,6},{4,9},{5,17},{6,11},{6,12},{8,6},{9,17},{10,3},{12,1},{15,5},{17,9},{17,14},{18,19},{19,4}, {19,8},{19,15}};
         for (int i = 0; i < uniqueRoomNames.length; i++)
         {
             Room temproom = new Room(uniqueRoomNames[i]);
