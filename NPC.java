@@ -188,9 +188,7 @@ public class NPC extends Player {
             }
            
 
-            if (curr.c.equals(new coordinate(targetx, targety))) {
-                return curr.b;
-            }
+            
 
             char[] directions = {'w', 'a', 's', 'd'};
             coordinate newloc;
@@ -201,24 +199,36 @@ public class NPC extends Player {
                     switch (direction) {
                         case ('w'):
                             newloc = new coordinate(curr.c.x() - 1, curr.c.y());
+                            if (newloc.equals(new coordinate(targetx, targety))) {
+                                return curr.b + Character.toString(direction);
+                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('a'):
                             newloc = new coordinate(curr.c.x(), curr.c.y() - 1);
+                            if (newloc.equals(new coordinate(targetx, targety))) {
+                                return curr.b + Character.toString(direction);
+                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('s'):
                             newloc = new coordinate(curr.c.x() + 1, curr.c.y());
+                            if (newloc.equals(new coordinate(targetx, targety))) {
+                                return curr.b + Character.toString(direction);
+                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('d'):
                             newloc = new coordinate(curr.c.x(), curr.c.y() + 1);
+                            if (newloc.equals(new coordinate(targetx, targety))) {
+                                return curr.b + Character.toString(direction);
+                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
@@ -238,23 +248,23 @@ public class NPC extends Player {
                 if (currx == 0) {
                     return false;
                 }
-                return !map.checkCollisionNPC(this, currx - 1, curry);
+                return !map.checkCollisionNPCFindPath(this, currx - 1, curry);
             case ('a'):
                 if (curry == 0) {
                     return false;
                 }
-                return !map.checkCollisionNPC(this, currx, curry - 1);
+                return !map.checkCollisionNPCFindPath(this, currx, curry - 1);
             case ('s'):
                 if (currx == 24) {
                     return false;
                 }
-                return !map.checkCollisionNPC(this, currx + 1, curry);
+                return !map.checkCollisionNPCFindPath(this, currx + 1, curry);
 
             case ('d'):
                 if (curry == 23) {
                     return false;
                 }
-                return !map.checkCollisionNPC(this, currx, curry + 1);      
+                return !map.checkCollisionNPCFindPath(this, currx, curry + 1);      
         }
         return false;
     }

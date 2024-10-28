@@ -149,7 +149,7 @@ public class map {
         NPC npc = (NPC) players.get(player);
         System.out.println("NPC " + npc + " is finding a path.");
         npc.pathfindMain(roll);
-        for (int i = 0; i < roll; i ++) {
+        for (int i = 0; i < Math.min(npc.currPath.size(), roll); i ++) {
             char currmove = npc.currPath.remove(0);
             switch (currmove) {
                 case ('w'):
@@ -278,6 +278,13 @@ public class map {
                 enterRoomNPC(npc, x, y);
                 yield false;
             }
+            default -> false;
+        };
+    }
+    public boolean checkCollisionNPCFindPath(NPC npc, int x, int y) {
+        return switch(map[x][y]) {
+            case 'x' -> true;
+            case 'd' -> true;
             default -> false;
         };
     }
