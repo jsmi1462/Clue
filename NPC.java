@@ -186,49 +186,65 @@ public class NPC extends Player {
             else {
                 continue;
             }
-           
+            
+            if (curr.c.equals(new coordinate(targetx, targety))) {
+                return curr.b;
+            }
 
             
 
             char[] directions = {'w', 'a', 's', 'd'};
             coordinate newloc;
             for (char direction: directions) {
-                
+                switch (direction) {
+                    case ('w'):
+                        newloc = new coordinate(curr.c.x() - 1, curr.c.y());
+                        if (newloc.equals(new coordinate(targetx, targety))) {
+                            return curr.b + Character.toString(direction);
+                        }
+                        break;
+                    case ('a'):
+                        newloc = new coordinate(curr.c.x(), curr.c.y() - 1);
+                        if (newloc.equals(new coordinate(targetx, targety))) {
+                            return curr.b + Character.toString(direction);
+                        }
+                        break;
+                    case ('s'):
+                        newloc = new coordinate(curr.c.x() + 1, curr.c.y());
+                        if (newloc.equals(new coordinate(targetx, targety))) {
+                            return curr.b + Character.toString(direction);
+                        }
+                        break;
+                    case ('d'):
+                        newloc = new coordinate(curr.c.x(), curr.c.y() + 1);
+                        if (newloc.equals(new coordinate(targetx, targety))) {
+                            return curr.b + Character.toString(direction);
+                        }
+                        break;
+                }
                 if (checkMoveValidity(curr.c.x(), curr.c.y(), direction))
                 {
                     switch (direction) {
                         case ('w'):
                             newloc = new coordinate(curr.c.x() - 1, curr.c.y());
-                            if (newloc.equals(new coordinate(targetx, targety))) {
-                                return curr.b + Character.toString(direction);
-                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('a'):
                             newloc = new coordinate(curr.c.x(), curr.c.y() - 1);
-                            if (newloc.equals(new coordinate(targetx, targety))) {
-                                return curr.b + Character.toString(direction);
-                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('s'):
                             newloc = new coordinate(curr.c.x() + 1, curr.c.y());
-                            if (newloc.equals(new coordinate(targetx, targety))) {
-                                return curr.b + Character.toString(direction);
-                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }
                             break;
                         case ('d'):
                             newloc = new coordinate(curr.c.x(), curr.c.y() + 1);
-                            if (newloc.equals(new coordinate(targetx, targety))) {
-                                return curr.b + Character.toString(direction);
-                            }
                             if (!checkifinarray(visited, newloc)) {
                                 q.add(new Triplet<Integer, String, coordinate>(curr.a + 1, curr.b + Character.toString(direction), newloc));
                             }

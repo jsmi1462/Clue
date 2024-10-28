@@ -1,3 +1,4 @@
+import java.awt.im.InputContext;
 import java.util.*;
 import java.io.*;
 
@@ -154,14 +155,20 @@ public class map {
             switch (currmove) {
                 case ('w'):
                     npc.xPos--;
+                    break;
                 case ('a'):
                     npc.yPos--;
+                    break;
                 case ('s'):
                     npc.xPos++;
+                    break;
                 case ('d'):
                     npc.yPos++;
+                    break;
             }
+            System.out.println("NPC" + npc + " is at " + npc.xPos + "," + npc.yPos);
         }
+        
         if (map[npc.xPos][npc.yPos] == 'd') {
             enterRoomNPC(npc, npc.xPos, npc.yPos);
             return false;
@@ -174,6 +181,8 @@ public class map {
         
         if (players.get(player).isNPC) {
             System.out.println("NPC " + players.get(player) + " is moving!");
+            //Scanner input = new Scanner(System.in);
+            //input.nextLine();
             System.out.println(this);
             return movenpc(player, roll);
         }
