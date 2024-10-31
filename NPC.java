@@ -35,7 +35,7 @@ public class NPC extends Player {
         return guess;
     }
 
-    public String revealcard(int player, String... strings) 
+    public String revealCard(int player, String... strings) 
     {
         boolean found = false;
         String cardtoreveal = "";
