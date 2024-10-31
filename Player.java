@@ -13,14 +13,14 @@ public class Player {
     public Scorecard card;
     public boolean isNPC;
     public map map;
-    public int absoluteindex;
+    public int absoluteIndex;
 
     public Player() {
         
     }
 
     public Player(String n, map m, int absindex) {
-        absoluteindex = absindex;
+        absoluteIndex = absindex;
         currentRoom = null;
         name = n;
         map = m;
@@ -134,13 +134,13 @@ public class Player {
     }
 
     public Player cloneName() {
-        Player temp = new Player(name, map, absoluteindex);
+        Player temp = new Player(name, map, absoluteIndex);
         return temp;
     }
 
     @Override
     public Player clone() { //clones player object
-        Player temp = new Player(name, map, absoluteindex);
+        Player temp = new Player(name, map, absoluteIndex);
         for (int i = 0; i < 3; i++) {
             temp.hand.add(hand.get(i));
         }
