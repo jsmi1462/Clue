@@ -1,4 +1,3 @@
-import java.awt.im.InputContext;
 import java.util.*;
 import java.io.*;
 
@@ -10,7 +9,7 @@ public class map {
     public HashMap<coordinate, Room> doors = new HashMap<>(); // doors linked to rooms, the reverse will be annoying unless we store player position inside door....
     public int nplay; // there has to be a better way this is stupid
     public String[] answer = new String[3];
-    public ArrayList<String> cards = new ArrayList<String>();
+    public ArrayList<String> cards = new ArrayList<>();
     public boolean gameOver;
     public ArrayList<Room> rooms = new ArrayList<>();
     
@@ -64,8 +63,8 @@ public class map {
     }
     
     public void assignDoorCoors() {
-        HashMap<String, Room> rooms2 = new HashMap<String, Room>();
-        String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billiard Room",
+        HashMap<String, Room> rooms2 = new HashMap<>();
+        String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billard Room",
         "Ball Room", "Kitchen", "Conservatory"};
         String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billiard Room", "Billiard Room",
             "Ball Room", "Ball Room", "Kitchen", "Conservatory", "Ball Room", "Ball Room"};
@@ -100,7 +99,7 @@ public class map {
 
         //add NPC
 
-        ArrayList<String> npcnames = new ArrayList<String>();
+        ArrayList<String> npcnames = new ArrayList<>();
         for (String n : new String[]{"Billy Bob Joe", "Jackson Grant", "Mr. Smith", "Mr. Gannon", "Bobby Kaufman", "Doc"}) {
             npcnames.add(n);
         }
@@ -365,7 +364,7 @@ public class map {
         for (String room : roomCards) {
             cards.add(room);
         }
-        ArrayList<String> temp = new ArrayList<String>();
+        ArrayList<String> temp = new ArrayList<>();
         for (int c = 0; c < cards.size(); c++) {
             temp.add(cards.get(c));
         }

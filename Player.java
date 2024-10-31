@@ -13,14 +13,14 @@ public class Player {
     public Scorecard card;
     public boolean isNPC;
     public map map;
-    public int absoluteindex;
+    public int absoluteIndex;
 
     public Player() {
         
     }
 
-    public Player(String n, map m, int absindex) {
-        absoluteindex = absindex;
+    public Player(String n, map m, int absIndex) {
+        absoluteIndex = absIndex;
         currentRoom = null;
         name = n;
         map = m;
@@ -79,36 +79,50 @@ public class Player {
                     }
                 }
             }
+            
             if (hasCard) {
-                System.out.println("\r\n" + name + ", please pass the screen to " + card.getPlayers(p).name + ".\r\n"
-                    + card.getPlayers(p).name + ", please press enter to confirm that only you are looking at the screen.");
-                input.nextLine();
-
-                System.out.print("\r\nPlease enter the card you would like to show to " + name + " out of the following:\r\n");
-                for (int s = 0; s < cardsHad.size(); s++) {
-                    System.out.print(cardsHad.get(s) + "\r\n");
-                }
-
                 String[] cardsHadArr = new String[cardsHad.size()];
                 for (int cH = 0; cH < cardsHad.size(); cH++) {
                     cardsHadArr[cH] = cardsHad.get(cH);
                 }
 
-                String cardRevealed = this.inputCheck(input, "\r\nCard to be revealed: ", cardsHadArr);
+                if (card.getPlayers(p).isNPC == false) {
+                    System.out.println("\r\n" + name + ", please pass the screen to " + card.getPlayers(p).name + ".\r\n"
+                        + card.getPlayers(p).name + ", please press enter to confirm that only you are looking at the screen.");
+                    input.nextLine();
 
-                System.out.println("\r\n" + card.getPlayers(p).name + ", please pass the screen back to " + name + ".\r\n"
-                    + name + ", please press enter to confirm that only you are looking at the screen.");
-                input.nextLine();
+                    System.out.print("\r\nPlease enter the card you would like to show to " + name + " out of the following:\r\n");
+                    for (int s = 0; s < cardsHad.size(); s++) {
+                        System.out.print(cardsHad.get(s) + "\r\n");
+                    }
 
-                System.out.println("\r\n" + card.getPlayers(p) + " has revealed the card \"" + cardRevealed + "\" to you. This information has been recorded!\r\n");
-                if (tempGuesses.indexOf(cardRevealed) == 0) {
-                    card.getPlayers(p).card.setPeople(cardRevealed, "X");
-                } else if (tempGuesses.indexOf(cardRevealed) == 1) {
-                    card.getPlayers(p).card.setWeapons(cardRevealed, "X");
+                    String cardRevealed = this.inputCheck(input, "\r\nCard to be revealed: ", cardsHadArr);
+
+                    System.out.println("\r\n" + card.getPlayers(p).name + ", please pass the screen back to " + name + ".\r\n"
+                        + name + ", please press enter to confirm that only you are looking at the screen.");
+                    input.nextLine();
+
+                    System.out.println("\r\n" + card.getPlayers(p) + " has revealed the card \"" + cardRevealed + "\" to you. This information has been recorded!\r\n");
+                    if (tempGuesses.indexOf(cardRevealed) == 0) {
+                        card.getPlayers(p).card.setPeople(cardRevealed, "X");
+                    } else if (tempGuesses.indexOf(cardRevealed) == 1) {
+                        card.getPlayers(p).card.setWeapons(cardRevealed, "X");
+                    } else {
+                        card.getPlayers(p).card.setRooms(cardRevealed, "X");
+                    }
+                    break;
                 } else {
-                    card.getPlayers(p).card.setRooms(cardRevealed, "X");
+                    String cardNPCRevealed = card.getPlayers(p).revealCard(absoluteIndex, cardsHadArr);
+                    if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(0))) {
+                        card.getPlayers(p).card.setPeople(cardNPCRevealed, "X");
+                    } else if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(1))) {
+                        card.getPlayers(p).card.setWeapons(cardNPCRevealed, "X");
+                    } else {
+                        card.getPlayers(p).card.setRooms(cardNPCRevealed, "X");
+                    }
+                    System.out.println(card.getPlayers(p).name + " has revealed the card \"" + cardNPCRevealed + "\" to you. This information has been recorded!\r\n");
+                    break;
                 }
-                break;
             } else {
                 System.out.println("\r\n" + card.getPlayers(p).name + " did not have any of the cards you guessed. This information has been recorded!\r\n"
                     + "Moving onto checking the cards of " + card.getPlayers(p + 1) + "...\r\n");
@@ -134,13 +148,13 @@ public class Player {
     }
 
     public Player cloneName() {
-        Player temp = new Player(name, map, absoluteindex);
+        Player temp = new Player(name, map, absoluteIndex);
         return temp;
     }
 
     @Override
     public Player clone() { //clones player object
-        Player temp = new Player(name, map, absoluteindex);
+        Player temp = new Player(name, map, absoluteIndex);
         for (int i = 0; i < 3; i++) {
             temp.hand.add(hand.get(i));
         }
