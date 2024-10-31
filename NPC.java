@@ -10,8 +10,8 @@ public class NPC extends Player {
     public String answerweapon;
     public String answerperson;
 
-    public NPC (String n, map m, int absindex) {
-        absoluteindex = absindex;
+    public NPC (String n, map m, int absIndex) {
+        absoluteIndex = absIndex;
         currentRoom = null;
         name = n;
         map = m;
@@ -340,7 +340,7 @@ public class NPC extends Player {
     @Override
     public NPC clone() {
         System.out.println("Cloning NPC with hand " + this.hand);
-        NPC n = new NPC(this.name, map, absoluteindex);
+        NPC n = new NPC(this.name, map, absoluteIndex);
         n.hand = this.hand;
         n.guesses = guesses;
         n.card = card;
