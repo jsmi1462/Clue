@@ -10,8 +10,8 @@ public class NPC extends Player {
     public String answerweapon;
     public String answerperson;
 
-    public NPC (String n, map m, int absIndex) {
-        absoluteIndex = absIndex;
+    public NPC (String n, map m, int absindex) {
+        absoluteIndex = absindex;
         currentRoom = null;
         name = n;
         map = m;
@@ -208,7 +208,6 @@ public class NPC extends Player {
     @Override
     public void guess() {
           Room guessedRoom = currTarget; // note to self - wtf is this
-           
     }
 
     public boolean checkifinarray(ArrayList<coordinate> visited, coordinate c) {
