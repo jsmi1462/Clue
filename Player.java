@@ -9,6 +9,7 @@ public class Player {
     public String name;
     public ArrayList<String> hand;
     public ArrayList<String> guesses;
+    public ArrayList<String> answer; 
     public Scorecard card;
     public boolean isNPC;
     public map map;

@@ -6,6 +6,9 @@ public class NPC extends Player {
     public Room currTarget;
     public ArrayList<Character> currPath;
     public ArrayList<ArrayList<String>> revealedcards; 
+    public String answerroom;
+    public String answerweapon;
+    public String answerperson;
 
     public NPC (String n, map m, int absindex) {
         absoluteindex = absindex;
@@ -23,11 +26,38 @@ public class NPC extends Player {
     public void update() {
         card = new Scorecard(this);
     }
-
+    public ArrayList<String> determineguess() {
+        String weapon = findbestweapon();
+        String person = findbestperson();
+        ArrayList<String> guess = new ArrayList<>();
+        guess.add(weapon);
+        guess.add(person);
+        return guess;
+    }
 
     public String revealcard(int player, String... strings) 
     {
+        boolean found = false;
         String cardtoreveal = "";
+        for (String s : strings) {
+            if (revealedcards.get(player).indexOf(cardtoreveal) != -1) {
+                cardtoreveal = s;
+                found = true;
+                break;
+            }
+        }
+        for (String s : strings) {
+            ArrayList<String> roomCards = new ArrayList<String>(Arrays.asList("Ball Room", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"));
+            if (roomCards.indexOf(s) == -1) {
+                cardtoreveal = s;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            cardtoreveal = strings[0];
+        }
+
         revealedcards.get(player).add(cardtoreveal);
         System.out.println("NPC " + name + " revealed name " + cardtoreveal + " to you.");
         return cardtoreveal;
@@ -85,10 +115,27 @@ public class NPC extends Player {
         int distance = findPath(moves, room) - moves;
         distance = (int) (distance + 6) / 7;
         thisvalue -= (distance * 3);
-        System.out.println("Room " + room + " has value "  + moves);
+        
         // if room unknown, done
         // if room = yours, 100 if ans, -inf/2 if no ans
         // if room = next in line, -infty, etc.
+
+        int negativeInf= -1000000;
+        int c = 1;
+        int b = 4;
+        System.out.println(room);
+        switch (card.checkCard("rooms", room.toString())) {
+            case (-1):
+                return 0;
+            case(0):
+                if (room.toString() == answerroom) return 100;
+                return (-negativeInf/2);
+            case (1):
+                return negativeInf;
+        }
+        System.out.println("Room " + room + " has distance value " + thisvalue);
+        thisvalue += (card.checkCard("rooms", room.toString()) -2) * c - b;
+        System.out.println("Room " + room + " has value "  + thisvalue);
         return thisvalue;
     }
 

@@ -65,9 +65,9 @@ public class map {
     
     public void assignDoorCoors() {
         HashMap<String, Room> rooms2 = new HashMap<String, Room>();
-        String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billard Room",
+        String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billiard Room",
         "Ball Room", "Kitchen", "Conservatory"};
-        String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billard Room", "Billard Room",
+        String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billiard Room", "Billiard Room",
             "Ball Room", "Ball Room", "Kitchen", "Conservatory", "Ball Room", "Ball Room"};
         int[][] doorCoors = {{3,6},{4,9},{5,17},{6,11},{6,12},{8,6},{9,17},{10,3},{12,1},{15,5},{17,9},{17,14},{18,19},{19,4}, {19,8},{19,15}};
         for (int i = 0; i < uniqueRoomNames.length; i++)
@@ -187,6 +187,7 @@ public class map {
             return movenpc(player, roll);
         }
         System.out.println("Your current card:");
+
         System.out.println(players.get(player).card);
         for (int i = roll; i > 0; i--) {
             System.out.println("Player " + player + " (" + players.get(player) + ") is playing with " + i + " moves remaining this turn!");
