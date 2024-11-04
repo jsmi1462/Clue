@@ -207,7 +207,68 @@ public class NPC extends Player {
 
     @Override
     public void guess() {
-          Room guessedRoom = currTarget; // note to self - wtf is this
+          ArrayList<String> tempGuesses = new ArrayList<>();
+          tempGuesses.add(this.findbestperson());
+          tempGuesses.add(this.findbestweapon());
+          tempGuesses.add(currentRoom.name);
+          boolean hasCard = false;
+          ArrayList<String> cardsHad = new ArrayList<>();
+  
+          for (int p = 1; p < 6; p++) {
+              for (int tG = 0; tG < 3; tG++) { //tG = tempGuesses
+                  for (int h = 0; h < 3; h++) {
+                      // System.out.println("Guess: " + tempGuesses.get(tG) + " Hand: " + card.getPlayers(p).hand.get(h));
+                      if (tempGuesses.get(tG).equalsIgnoreCase(card.getPlayers(p).hand.get(h))) {
+                          hasCard = true;
+                          cardsHad.add(tempGuesses.get(tG));
+                      }
+                  }
+              }
+              
+              if (hasCard) {
+                  String[] cardsHadArr = new String[cardsHad.size()];
+                  for (int cH = 0; cH < cardsHad.size(); cH++) {
+                      cardsHadArr[cH] = cardsHad.get(cH);
+                  }
+  
+                  if (card.getPlayers(p).isNPC == false) {
+                      System.out.println("\r\n" + name + ", please pass the screen to " + card.getPlayers(p).name + ".\r\n"
+                          + card.getPlayers(p).name + ", please press enter to confirm that only you are looking at the screen.");
+                      input.nextLine();
+  
+                      System.out.print("\r\nPlease enter the card you would like to show to " + name + " out of the following:\r\n");
+                      for (int s = 0; s < cardsHad.size(); s++) {
+                          System.out.print(cardsHad.get(s) + "\r\n");
+                      }
+  
+                      String cardRevealed = this.inputCheck(input, "\r\nCard to be revealed: ", cardsHadArr);
+                      if (tempGuesses.indexOf(cardRevealed) == 0) {
+                          card.getPlayers(p).card.setPeople(cardRevealed, "X");
+                      } else if (tempGuesses.indexOf(cardRevealed) == 1) {
+                          card.getPlayers(p).card.setWeapons(cardRevealed, "X");
+                      } else {
+                          card.getPlayers(p).card.setRooms(cardRevealed, "X");
+                      }
+                      break;
+                  } else {
+                      NPC n = (NPC) card.getPlayers(p);
+                      String cardNPCRevealed = n.revealCard(absoluteIndex, cardsHadArr);
+                      if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(0))) {
+                          card.getPlayers(p).card.setPeople(cardNPCRevealed, "X");
+                      } else if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(1))) {
+                          card.getPlayers(p).card.setWeapons(cardNPCRevealed, "X");
+                      } else {
+                          card.getPlayers(p).card.setRooms(cardNPCRevealed, "X");
+                      }
+                      break;
+                  }
+              } else {
+                  card.getPlayers(p).card.setPeople(tempGuesses.get(0), "O");
+                  card.getPlayers(p).card.setWeapons(tempGuesses.get(1), "O");
+                  card.getPlayers(p).card.setRooms(tempGuesses.get(2), "O");
+              }
+          }
+
     }
 
     public boolean checkifinarray(ArrayList<coordinate> visited, coordinate c) {
