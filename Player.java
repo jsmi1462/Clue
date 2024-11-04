@@ -56,9 +56,7 @@ public class Player {
     public void update() {
         card = new Scorecard(this);
     }
-    public void printHand() {
-        System.out.println(this.hand);
-    }
+
     public void guess() {
         ArrayList<String> tempGuesses = new ArrayList<>();
         System.out.println(card + "\r\nYou are in the " + currentRoom.name + " right now."); //Displays Scorecard
@@ -122,6 +120,7 @@ public class Player {
                         card.getPlayers(p).card.setRooms(cardNPCRevealed, "X");
                     }
                     System.out.println(card.getPlayers(p).name + " has revealed the card \"" + cardNPCRevealed + "\" to you. This information has been recorded!\r\n");
+                    input.nextLine();
                     break;
                 }
             } else {
@@ -187,6 +186,7 @@ public class Player {
                 rooms.put(roomCards[r], " ");
             }
         }
+        
         public int checkCard(String hash, String s) {
             for (int i = 0; i < 6; i ++) {
                 if (checkCardSpecific(i, hash, s)) {
@@ -235,7 +235,7 @@ public class Player {
             for (int c = 0; c < 3; c++) {
                 room = true;
                 for (int x = 0; x < 6; x++) {
-                    System.out.println(players.get(0).hand);
+                    // System.out.println(players.get(0).hand);
                     if (players.get(0).hand.get(c).equals(weaponCards[x])) {
                         players.get(0).card.setWeapons(weaponCards[x], "X");
                         room = false;
@@ -254,6 +254,7 @@ public class Player {
                 peopleCards[p] = players.get(p).name;
             }
 
+/*
             //set O's for cards you know you don't have
 /*
             for (int p = 0; p < 6; p++) {

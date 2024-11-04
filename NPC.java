@@ -19,6 +19,9 @@ public class NPC extends Player {
         hand = new ArrayList<String>();
         guesses = new ArrayList<String>();
         revealedcards = new ArrayList<ArrayList<String>>();
+        for (int i = 0; i < 6; i++) {
+            revealedcards.add(new ArrayList<>());
+        }
 
     }
 
@@ -59,7 +62,6 @@ public class NPC extends Player {
         }
 
         revealedcards.get(player).add(cardtoreveal);
-        System.out.println("NPC " + name + " revealed name " + cardtoreveal + " to you.");
         return cardtoreveal;
     }
 
@@ -393,17 +395,16 @@ public class NPC extends Player {
     }
     
     @Override
-    public void printHand() {
-        System.out.println("current NPC has hand" + hand);
-    }
-    
-    @Override
-    public NPC clone() {
+    public Player clone() {
         System.out.println("Cloning NPC with hand " + this.hand);
-        NPC n = new NPC(this.name, map, absoluteIndex);
-        n.hand = this.hand;
-        n.guesses = guesses;
-        n.card = card;
+        Player n = new NPC(this.name, map, absoluteIndex);
+        for (String h : this.hand) {
+            n.hand.add(h);
+        }
+        for (String g : guesses) {
+            n.guesses.add(g);
+        }
+        n.card = new Scorecard(n);
         return n;
     }
     public String toString() {
