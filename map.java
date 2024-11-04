@@ -177,7 +177,12 @@ public class map {
 
     public boolean moveplayer(int player, int roll) {
         
-        
+        if (playersingame.size() == 1) {
+            win(players.get(player));
+            gameOver = true;
+            return true;
+
+        }
         if (players.get(player).isNPC) {
             System.out.println("NPC " + players.get(player) + " is moving!");
             //Scanner input = new Scanner(System.in);
