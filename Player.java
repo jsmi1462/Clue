@@ -112,7 +112,8 @@ public class Player {
                     }
                     break;
                 } else {
-                    String cardNPCRevealed = card.getPlayers(p).revealCard(absoluteIndex, cardsHadArr);
+                    NPC n = (NPC) card.getPlayers(p);
+                    String cardNPCRevealed = n.revealCard(absoluteIndex, cardsHadArr);
                     if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(0))) {
                         card.getPlayers(p).card.setPeople(cardNPCRevealed, "X");
                     } else if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(1))) {

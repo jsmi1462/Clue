@@ -64,7 +64,7 @@ public class map {
     
     public void assignDoorCoors() {
         HashMap<String, Room> rooms2 = new HashMap<>();
-        String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billard Room",
+        String[] uniqueRoomNames = {"Study", "Hall", "Lounge", "Library", "Dining Room", "Billiard Room",
         "Ball Room", "Kitchen", "Conservatory"};
         String[] roomNames = {"Study", "Hall", "Lounge", "Hall", "Hall", "Library", "Dining Room", "Library", "Billiard Room", "Billiard Room",
             "Ball Room", "Ball Room", "Kitchen", "Conservatory", "Ball Room", "Ball Room"};
