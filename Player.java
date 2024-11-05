@@ -218,6 +218,15 @@ public class Player {
             }
         }
 
+        // public ArrayList<String> checkAnswer() {
+        //     ArrayList<String> answer = new ArrayList<>();
+        //     for (int p = 0; p < 6; p++) {
+        //         if (people.get(peopleCards[p]).equals(" ")) {
+
+        //         }
+        //     }
+        // }
+
         public void update() { //Called only one time once all players are created in Map
             Player tempNext = currentPlayer;
             Player playerClone = tempNext.clone();
