@@ -111,6 +111,7 @@ public class NPC extends Player {
         currTarget = bestroom;
         System.out.println("The target room is " + bestroom);
         findPath(moves, bestroom);
+        input.nextLine();
     }
     public int calcRoomValue(int moves, Room room) {
         int thisvalue = 0;
