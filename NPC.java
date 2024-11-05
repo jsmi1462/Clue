@@ -126,7 +126,7 @@ public class NPC extends Player {
         int negativeInf= -1000000;
         int c = 1;
         int b = 4;
-        System.out.println(room);
+        //System.out.println(room);
         switch (card.checkCard("rooms", room.toString())) {
             case (-1):
                 return 0;
@@ -198,14 +198,14 @@ public class NPC extends Player {
             int negativeInf= -1000000;
             int b = 4;
             int c = 1;
-            switch (card.checkCard("Weapon", person)) {
+            switch (card.checkCard("People", person)) {
                 case(0):
                     if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
                     return (-0.1);
                 case (1):
                     return negativeInf;
             }
-            return (card.checkCard("Weapon", person) -2) * c - b;
+            return (card.checkCard("People", person) -2) * c - b;
         } 
 
     public void finalguess() {
@@ -234,6 +234,7 @@ public class NPC extends Player {
                       // System.out.println("Guess: " + tempGuesses.get(tG) + " Hand: " + card.getPlayers(p).hand.get(h));
                       if (tempGuesses.get(tG).equalsIgnoreCase(card.getPlayers(p).hand.get(h))) {
                           hasCard = true;
+                          System.out.println("Someone has a card that I guessed!");
                           cardsHad.add(tempGuesses.get(tG));
                       }
                   }
@@ -267,6 +268,7 @@ public class NPC extends Player {
                   } else {
                       NPC n = (NPC) card.getPlayers(p);
                       String cardNPCRevealed = n.revealCard(absoluteIndex, cardsHadArr);
+                      System.out.println(cardNPCRevealed + " was revealed to me");
                       if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(0))) {
                           card.getPlayers(p).card.setPeople(cardNPCRevealed, "X");
                       } else if (cardNPCRevealed.equalsIgnoreCase(tempGuesses.get(1))) {
@@ -407,9 +409,9 @@ public class NPC extends Player {
     }
     
     @Override
-    public Player clone() {
-        System.out.println("Cloning NPC with hand " + this.hand);
-        Player n = new NPC(this.name, map, absoluteIndex);
+    public NPC clone() {
+        //System.out.println("Cloning NPC with hand " + this.hand);
+        NPC n = new NPC(this.name, map, absoluteIndex);
         for (String h : this.hand) {
             n.hand.add(h);
         }

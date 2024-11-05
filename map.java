@@ -165,7 +165,7 @@ public class map {
                     npc.yPos++;
                     break;
             }
-            System.out.println("NPC" + npc + " is at " + npc.xPos + "," + npc.yPos);
+            //System.out.println("NPC" + npc + " is at " + npc.xPos + "," + npc.yPos);
         }
         
         if (map[npc.xPos][npc.yPos] == 'd') {
@@ -305,13 +305,9 @@ public class map {
 
     public void enterRoomNPC(NPC p, int x, int y) {
         Room roomtoenter = doors.get(new coordinate(x, y));
+        System.out.println("NPC " + p.toString() + " is entering room " + roomtoenter.toString());
         p.currentRoom = roomtoenter;
-        try {
-            p.guess();
-        } catch (Exception e) {
-            return;
-        }
-        return;
+        p.guess();
     }
 
     public boolean enterRoom(Player p, int x, int y) {

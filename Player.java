@@ -218,12 +218,12 @@ public class Player {
         }
 
         public void update() { //Called only one time once all players are created in Map
-            Player tempNext = currentPlayer;
-            Player playerClone = tempNext.clone();
+            Player tempNext = (Player) currentPlayer;
+            Player playerClone = (Player) tempNext.clone();
             for (int p = 0; p < 6; p++) {
                 players.add(playerClone);
-                tempNext = tempNext.nextPlayer;
-                playerClone = tempNext.clone();
+                tempNext = (Player) tempNext.nextPlayer;
+                playerClone = (Player) tempNext.clone();
             }
             for (int p = 0; p < 6; p++) {
                 for (int h = 0; h < 6; h++) {

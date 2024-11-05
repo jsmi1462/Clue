@@ -3,7 +3,7 @@ import java.util.*;
 public class Clue {
     public ArrayList<String> answer;
     public static void main(String[] args) {
-        map gameMap = new map(1);
+        map gameMap = new map(0);
         int winner = 0;
         while (gameMap.gameOver == false) {
             int limit = gameMap.playersingame.size();
