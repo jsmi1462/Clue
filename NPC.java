@@ -66,7 +66,7 @@ public class NPC extends Player {
     }
 
     public int findPath(int moves, Room room) {
-        System.out.println("Finding path to room " + room);
+        //System.out.println("Finding path to room " + room);
         currPath = new ArrayList<Character>();
         ArrayList<map.coordinate> targetCoords = new ArrayList<>();
         for (Map.Entry<map.coordinate, Room> entry : map.doors.entrySet()) {
@@ -80,9 +80,9 @@ public class NPC extends Player {
             int targetx = targetCoord.x();
             int targety = targetCoord.y();
             ArrayList<coordinate> forbfs = new ArrayList<>(); // argh
-            System.out.println("Trying path to " + targetx + "," + targety);
+            //System.out.println("Trying path to " + targetx + "," + targety);
             String path = BFS(0, "", targetx, targety, xPos, yPos, forbfs);
-            System.out.println("Found path " + path + " to " + targetx + "," + targety);
+            //System.out.println("Found path " + path + " to " + targetx + "," + targety);
             if (path.length() < minmoves) {
                 minmoves = path.length();
                 mincoords = new int[] {targetCoord.x(), targetCoord.y()};
@@ -90,7 +90,7 @@ public class NPC extends Player {
         }
         ArrayList<coordinate> forbfs = new ArrayList<>(); // argh
         String bestpath = BFS(0, "", mincoords[0], mincoords[1], xPos, yPos, forbfs);
-        System.out.println("The best path has been determined to be " + bestpath);
+        //System.out.println("The best path has been determined to be " + bestpath);
         for (int i = 0; i < bestpath.length(); i++) {
             currPath.add(bestpath.charAt(i));
         }
@@ -109,7 +109,7 @@ public class NPC extends Player {
             }
         }
         currTarget = bestroom;
-        System.out.println("The target room is " + bestroom);
+        //System.out.println("The target room is " + bestroom);
         findPath(moves, bestroom);
         input.nextLine();
     }
@@ -136,9 +136,9 @@ public class NPC extends Player {
             case (1):
                 return negativeInf;
         }
-        System.out.println("Room " + room + " has distance value " + thisvalue);
+        //System.out.println("Room " + room + " has distance value " + thisvalue);
         thisvalue += (card.checkCard("rooms", room.toString()) -2) * c - b;
-        System.out.println("Room " + room + " has value "  + thisvalue);
+        //System.out.println("Room " + room + " has value "  + thisvalue);
         return thisvalue;
     }
 
@@ -208,6 +208,16 @@ public class NPC extends Player {
             return (card.checkCard("Weapon", person) -2) * c - b;
         } 
 
+    public void finalguess() {
+        /*
+        if (finalGuesses.get(0).equalsIgnoreCase(map.answer[0]) &&
+            finalGuesses.get(1).equalsIgnoreCase(map.answer[1]) &&
+            finalGuesses.get(2).equalsIgnoreCase(map.answer[2])) {
+                correct = true;
+        }
+        */
+    }
+
     @Override
     public void guess() {
           ArrayList<String> tempGuesses = new ArrayList<>();
@@ -216,6 +226,7 @@ public class NPC extends Player {
           tempGuesses.add(currentRoom.name);
           boolean hasCard = false;
           ArrayList<String> cardsHad = new ArrayList<>();
+          System.out.println("Hi! I'm guessing" + tempGuesses.toString());
   
           for (int p = 1; p < 6; p++) {
               for (int tG = 0; tG < 3; tG++) { //tG = tempGuesses
