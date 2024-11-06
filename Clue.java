@@ -5,6 +5,7 @@ public class Clue {
     public static void main(String[] args) {
         map gameMap = new map(0);
         int winner = 0;
+        System.out.println()
         while (gameMap.gameOver == false) {
             int limit = gameMap.playersingame.size();
             for (int i = 0; i < limit; i ++) {
