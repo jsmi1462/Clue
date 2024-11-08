@@ -14,6 +14,7 @@ public class Clue {
                 int roll3 = roll + roll2;
                 //System.out.println("Player " + i + "is currently in space " + gamemap.players.get(i).xPos + " , " + gamemap.players.get(i).yPos);
                 if (gameMap.moveplayer(i, roll3) == false) {
+                    System.out.println("Oh no! Player " + gameMap.playersingame.get(i).toString() + " lost the game!");
                     i--;
                     limit--;
                 }

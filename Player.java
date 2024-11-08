@@ -208,13 +208,13 @@ public class Player {
                 } else {
                     return false;
                 }
-            } else {
+            } else if (hash.equalsIgnoreCase("Rooms")) {
                 if (players.get(playerNum).card.getRooms(s).equals("X")) {
                     return true;
                 } else {
                     return false;
                 }
-            }
+            } else return false;
         }
 
         public void update() { //Called only one time once all players are created in Map

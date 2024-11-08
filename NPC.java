@@ -99,7 +99,6 @@ public class NPC extends Player {
 
     public void pathfindMain(int moves) {
         int bestvalue = calcRoomValue(moves, map.rooms.get(0));
-        int infinity = 1000000;
         Room bestroom = map.rooms.get(0);
         for (Room room: map.rooms) {
             int thisvalue = calcRoomValue(moves, room);
@@ -129,12 +128,12 @@ public class NPC extends Player {
         //System.out.println(room);
         switch (card.checkCard("rooms", room.toString())) {
             case (-1):
-                return 0;
+                return thisvalue;
             case(0):
-                if (room.toString() == answerroom) return 100;
-                return (-negativeInf/2);
+                if (room.toString().equals(answerroom)) return thisvalue + 100;
+                return thisvalue + (negativeInf/2);
             case (1):
-                return negativeInf;
+                return thisvalue + negativeInf;
         }
         //System.out.println("Room " + room + " has distance value " + thisvalue);
         thisvalue += (card.checkCard("rooms", room.toString()) -2) * c - b;
@@ -151,7 +150,6 @@ public class NPC extends Player {
             bestvalue = thisvalue;
             bestweapon = weapon;
         }
-
     }
     return bestweapon;
     }
@@ -162,8 +160,10 @@ public class NPC extends Player {
         int b = 4;
         int c = 1;
         switch (card.checkCard("Weapon", weapon)) {
+            case(-1):
+                return 0;
             case(0):
-                if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
+                //if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
                 return (-0.1);
             case (1):
                 return negativeInf;
@@ -199,8 +199,10 @@ public class NPC extends Player {
             int b = 4;
             int c = 1;
             switch (card.checkCard("People", person)) {
+                case(-1):
+                    return 0;
                 case(0):
-                    if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
+                    //if (card.checkCard("rooms", currentRoom.toString()) == -1) return (-negativeInf);
                     return (-0.1);
                 case (1):
                     return negativeInf;
@@ -208,18 +210,13 @@ public class NPC extends Player {
             return (card.checkCard("People", person) -2) * c - b;
         } 
 
-    public void finalguess() {
-        /*
-        if (finalGuesses.get(0).equalsIgnoreCase(map.answer[0]) &&
-            finalGuesses.get(1).equalsIgnoreCase(map.answer[1]) &&
-            finalGuesses.get(2).equalsIgnoreCase(map.answer[2])) {
-                correct = true;
-        }
-        */
+    public boolean finalGuess() {
+        return true;
     }
 
     @Override
     public void guess() {
+          System.out.println(card);
           ArrayList<String> tempGuesses = new ArrayList<>();
           tempGuesses.add(this.findbestperson());
           tempGuesses.add(this.findbestweapon());

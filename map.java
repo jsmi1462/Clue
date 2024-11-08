@@ -169,8 +169,7 @@ public class map {
         }
         
         if (map[npc.xPos][npc.yPos] == 'd') {
-            enterRoomNPC(npc, npc.xPos, npc.yPos);
-            return false;
+            return enterRoomNPC(npc, npc.xPos, npc.yPos);
         }
         else return true; // filler b/c npc never makes wrong moves
     }
@@ -183,7 +182,7 @@ public class map {
             return true;
 
         }
-        if (players.get(player).isNPC) {
+        if (playersingame.get(player).isNPC) {
             System.out.println("NPC " + players.get(player) + " is moving!");
             //Scanner input = new Scanner(System.in);
             //input.nextLine();
@@ -192,9 +191,9 @@ public class map {
         }
         System.out.println("Your current card:");
 
-        System.out.println(players.get(player).card);
+        System.out.println(playersingame.get(player).card);
         for (int i = roll; i > 0; i--) {
-            System.out.println("Player " + player + " (" + players.get(player) + ") is playing with " + i + " moves remaining this turn!");
+            System.out.println("Player " + player + " (" + playersingame.get(player) + ") is playing with " + i + " moves remaining this turn!");
             System.out.println(this);
 
             Player play = players.get(player);
@@ -204,7 +203,7 @@ public class map {
             while (valid == false) {
                 //boolean amove = false;
                 //while (amove == false) {
-                move = players.get(player).inputCheck(players.get(player).input, "Enter move: w for up, a for left, d for right, s for down:", "w", "a", "s", "d");
+                move = playersingame.get(player).inputCheck(playersingame.get(player).input, "Enter move: w for up, a for left, d for right, s for down:", "w", "a", "s", "d");
                 //String[] validmoves = new String[]{"w", "a", "s", "d"};
                 //for (String validmove: validmoves) {
                 //    amove = (move.equals(validmove));
@@ -213,9 +212,9 @@ public class map {
                 switch (move) {
                     case "w" -> {
                         if (play.xPos > 0) {
-                            if (!checkCollision(players.get(player), play.xPos - 1, play.yPos)) {
+                            if (!checkCollision(playersingame.get(player), play.xPos - 1, play.yPos)) {
                                 System.out.println("You moved up.");
-                                players.get(player).xPos--;
+                                playersingame.get(player).xPos--;
                                 valid = true;
                                 break;
                             }
@@ -225,9 +224,9 @@ public class map {
                     }
                     case "a" -> {
                         if (play.yPos > 0) {
-                            if (!checkCollision(players.get(player), play.xPos, play.yPos - 1)) {
+                            if (!checkCollision(playersingame.get(player), play.xPos, play.yPos - 1)) {
                                 System.out.println("You moved left.");
-                                players.get(player).yPos--;
+                                playersingame.get(player).yPos--;
                                 valid = true;
                                 break;
                             }
@@ -237,9 +236,9 @@ public class map {
                     }
                     case "s" -> {
                         if (play.xPos < 24) {
-                            if (!checkCollision(players.get(player), play.xPos + 1, play.yPos)) {
+                            if (!checkCollision(playersingame.get(player), play.xPos + 1, play.yPos)) {
                                 System.out.println("You moved down.");
-                                players.get(player).xPos++;
+                                playersingame.get(player).xPos++;
                                 valid = true;
                                 break;
                             }
@@ -249,9 +248,9 @@ public class map {
                     }
                     case "d" -> {
                         if (play.yPos < 23) {
-                            if (!checkCollision(players.get(player), play.xPos, play.yPos + 1)) {
+                            if (!checkCollision(playersingame.get(player), play.xPos, play.yPos + 1)) {
                                 System.out.println("You moved right.");
-                                players.get(player).yPos++;
+                                playersingame.get(player).yPos++;
                                 valid = true;
                                 break;
                             }
@@ -303,11 +302,22 @@ public class map {
         };
     }
 
-    public void enterRoomNPC(NPC p, int x, int y) {
+    public boolean enterRoomNPC(NPC p, int x, int y) {
         Room roomtoenter = doors.get(new coordinate(x, y));
         System.out.println("NPC " + p.toString() + " is entering room " + roomtoenter.toString());
         p.currentRoom = roomtoenter;
+        if (p.card.checkAnswer() != null) {
+            if (p.finalGuess()) {
+                gameOver = true;
+                return true;
+            }
+            else {
+                this.lose(p);
+                return false;
+            }
+        }
         p.guess();
+        return true;
     }
 
     public boolean enterRoom(Player p, int x, int y) {
