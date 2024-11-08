@@ -106,7 +106,7 @@ public class map {
 
         for (int i = 0; i < 6 - nplayers; i ++) {
             String npcname = npcnames.remove((int) Math.random()* (npcnames.size()));
-            Player temp = new NPC(npcname, this, i);
+            Player temp = (Player) new NPC(npcname, this, i);
             System.out.println("NPC " + i + " is " + temp + "!");
             players.add(temp.clone());
             players.get(nplayers + i).hand = new ArrayList<String>();
