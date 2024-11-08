@@ -217,6 +217,57 @@ public class Player {
             }
         }
 
+        public ArrayList<String> checkAnswer() {
+            ArrayList<String> answer = new ArrayList<>();
+            int counter = 0;
+
+            for (int pC = 0; pC < 6; pC++) {
+                if (players.get(0).card.getPeople(peopleCards[pC]).equals(" ")) {
+                    for (int n = 1; n < 6; n++) {
+                        if (players.get(n).card.getPeople(peopleCards[pC]).equals("O")) {
+                            counter++;
+                        }
+                    }
+                    if (counter == 5) {
+                        answer.add(peopleCards[pC]);
+                        counter = 0;
+                    }
+                }
+            }
+            for (int wC = 0; wC < 6; wC++) {
+                if (players.get(0).card.getWeapons(weaponCards[wC]).equals(" ")) {
+                    for (int n = 1; n < 6; n++) {
+                        if (players.get(n).card.getWeapons(weaponCards[wC]).equals("O")) {
+                            counter++;
+                        }
+                    }
+                    if (counter == 5) {
+                        answer.add(weaponCards[wC]);
+                        counter = 0;
+                    }
+                }
+            }
+            for (int rC = 0; rC < 9; rC++) {
+                if (players.get(0).card.getRooms(roomCards[rC]).equals(" ")) {
+                    for (int n = 1; n < 6; n++) {
+                        if (players.get(n).card.getRooms(roomCards[rC]).equals("O")) {
+                            counter++;
+                        }
+                    }
+                    if (counter == 5) {
+                        answer.add(roomCards[rC]);
+                        counter = 0;
+                    }
+                }
+            }
+
+            if (answer.size() == 3) {
+                return answer;
+            } else {
+                return null;
+            }
+        }
+
         public void update() { //Called only one time once all players are created in Map
             Player tempNext = (Player) currentPlayer;
             Player playerClone = (Player) tempNext.clone();
